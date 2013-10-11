@@ -27,6 +27,7 @@ cd `mktemp -d -t unifi`
 
 # Create the rc.d script for automatic startup/shutdown...
 # Thinking a heredoc insertion of the script, dumped directly to a ${name} file in /etc/rc.d
+# What to do if file exists?
 # cat <<'EOF'
 # (script)
 # EOF > /etc/rc.d/${name}
