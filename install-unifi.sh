@@ -31,8 +31,9 @@ cd `mktemp -d -t unifi`
 # (script)
 # EOF > /etc/rc.d/${name}
 
-# Add the startup variable to rc.conf:
-echo "${name}_enable=YES" >> /etc/rc.conf.local
+# Add the startup variable to rc.conf.local.
+# Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
+echo "unifi_enable=YES" >> /etc/rc.conf.local
 
 # Start it up:
-/usr/sbin/service ${name} start
+/usr/sbin/service unifi start
