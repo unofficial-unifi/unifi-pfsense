@@ -26,9 +26,21 @@ unifi_start()
 
 unifi_stop()
 {
-  echo "Stopping UniFi controller."
-  /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar stop
-  rm /var/run/${name}.pid
+
+  if [ -f /var/run/${name}.pid ]; then
+
+    echo -n "Stopping UniFi controller."
+
+    /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar stop
+
+    while `pgrep -F /var/run/${name}.pid`; do
+      echo -n "."
+      sleep 3
+    done
+
+    rm /var/run/${name}.pid
+    echo "done";
+  fi
 }
 
 run_rc_command "$1"
