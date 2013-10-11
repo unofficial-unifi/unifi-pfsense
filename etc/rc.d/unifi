@@ -45,16 +45,16 @@ unifi_stop()
     # Wait until the stopper finishes:
     while [ `pgrep $stopper` ]; do
       echo -n "."
-      sleep 3
+      sleep 5
     done
 
     echo " acknowledged."
-    echo -n "Waiting for the UniFi controller to stop..."
+    echo -n "Waiting for the UniFi controller to stop (this can take a long time)..."
 
     # ...then we wait until the service identified by the pid file goes away:
     while [ `pgrep -F $pidfile` ]; do
       echo -n "."
-      sleep 3
+      sleep 5
     done
 
     # Remove the pid file:
