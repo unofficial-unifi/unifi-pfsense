@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# REQUIRE: FILESYSTEMS
+# REQUIRE: NETWORKING
+# PROVIDE: unifi
+
+. /etc/rc.subr
+
+name="unifi"
+rcvar=`set_rcvar`
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+
+pidfile="/var/run/${name}.pid"
+
+load_rc_config $name
+
+unifi_start()
+{
+  if checkyesno ${rcvar}; then
+    echo "Starting UniFi controller."
+    /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar start &
+    echo $! > /var/run/${name}.pid
+  fi
+}
+
+unifi_stop()
+{
+  echo "Stopping UniFi controller."
+  /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar stop
+  rm /var/run/${name}.pid
+}
+
+run_rc_command "$1"
