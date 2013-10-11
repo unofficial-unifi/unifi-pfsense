@@ -20,14 +20,14 @@ unifi_start()
   if checkyesno ${rcvar}; then
     echo "Starting UniFi controller."
     /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar start &
-    echo $! > /var/run/${name}.pid
+    echo $! > $pidfile
   fi
 }
 
 unifi_stop()
 {
 
-  if [ -f /var/run/${name}.pid ]; then
+  if [ -f $pidfile ]; then
 
     echo -n "Stopping UniFi controller."
 
@@ -40,6 +40,8 @@ unifi_stop()
 
     rm /var/run/${name}.pid
     echo "done";
+    while [ `pgrep -F $pidfile` ]; do
+    rm $pidfile
   fi
 }
 
