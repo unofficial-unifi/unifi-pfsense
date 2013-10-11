@@ -6,7 +6,7 @@ A pfSense package that provides the UniFi Controller software.
 Purpose
 -------
 
-The UniFi Controller software from Ubiquiti Networks runs well on the underlying FreeBSD operating system used by pfSense, but no package yet exists (publicly) for installing the UniFi Controller on pfSense. The objective of this project is to develop and maintain a package that provides the UniFi Controller software on pfSense platforms.
+The UniFi Controller software from [Ubiquiti Networks](http://www.ubnt.com/) runs well on the underlying FreeBSD operating system used by [pfSense](http://www.pfsense.org/), but no package yet exists (publicly) for installing the UniFi Controller on pfSense. The objective of this project is to develop and maintain a package that provides the UniFi Controller software on pfSense platforms.
 
 Milestones
 ----------
