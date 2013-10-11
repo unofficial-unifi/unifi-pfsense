@@ -18,9 +18,13 @@ load_rc_config $name
 unifi_start()
 {
   if checkyesno ${rcvar}; then
-    echo "Starting UniFi controller."
+    echo "Starting UniFi controller. "
+
+    # The process will run until it is terminated and does not fork on its own.
+    # So we start it in the background and stash the pid:
     /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar start &
     echo $! > $pidfile
+
   fi
 }
 
@@ -29,19 +33,34 @@ unifi_stop()
 
   if [ -f $pidfile ]; then
 
-    echo -n "Stopping UniFi controller."
+    echo -n "Signaling the UniFi controller to stop..."
 
-    /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar stop
+    # This process does take a while, but the stop command finishes before
+    # the service is actually stopped. So we start it in the background:
+    /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar stop &
 
-    while `pgrep -F /var/run/${name}.pid`; do
+    # Get the pid of the stopper:
+    stopper=$!
+
+    # Wait until the stopper finishes:
+    while [ `pgrep $stopper` ]; do
       echo -n "."
       sleep 3
     done
 
-    rm /var/run/${name}.pid
-    echo "done";
+    echo " acknowledged."
+    echo -n "Waiting for the UniFi controller to stop..."
+
+    # ...then we wait until the service identified by the pid file goes away:
     while [ `pgrep -F $pidfile` ]; do
+      echo -n "."
+      sleep 3
+    done
+
+    # Remove the pid file:
     rm $pidfile
+
+    echo " stopped.";
   fi
 }
 
