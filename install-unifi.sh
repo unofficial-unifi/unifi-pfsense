@@ -49,7 +49,8 @@ chmod +x /usr/local/etc/rc.d/unifi
 
 # Add the startup variable to rc.conf.local.
 # Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
-echo "unifi_enable=YES" >> /etc/rc.conf.local
+#echo "Enabling the unifi service."
+#echo "unifi_enable=YES" >> /etc/rc.conf.local
 
 # Start it up:
 /usr/sbin/service unifi start
