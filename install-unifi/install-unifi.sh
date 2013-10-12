@@ -37,12 +37,8 @@ echo "Installing UniFi controller in /usr/local..."
 echo "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 
-# Create the rc.d script for automatic startup/shutdown...
-# Thinking a heredoc insertion of the script, dumped directly to a ${name} file in /etc/rc.d
-# What to do if file exists?
-# cat <<'EOF'
-# (script)
-# EOF > /usr/local/etc/rc.d/unifi
+# Fetch the rc script from github:
+/usr/bin/fetch -o /usr/local/etc/rc.d/unifi https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi
 
 # Fix permissions so it'll run
 chmod +x /usr/local/etc/rc.d/unifi
