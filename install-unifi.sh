@@ -42,7 +42,10 @@ echo "Updating mongod link..."
 # What to do if file exists?
 # cat <<'EOF'
 # (script)
-# EOF > /etc/rc.d/${name}
+# EOF > /usr/local/etc/rc.d/unifi
+
+# Fix permissions so it'll run
+chmod +x /usr/local/etc/rc.d/unifi
 
 # Add the startup variable to rc.conf.local.
 # Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
