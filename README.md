@@ -37,6 +37,18 @@ Challenges
 - It is not clear whether we can even download the software automatically from Ubiquiti according to the terms of the relevant licenses.
 - Version 3 of the UniFI software has just been released, and it is not clear what the differences are from v2 for the purposes of this project.
 
+Usage
+-----
+
+The project now provides two working scripts: an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
+
+To install the whole shebang:
+
+1. Log in to your pfSense system via the command line.
+2. Run this one-liner which downloads the install script and pipes it into sh:
+    fetch -o - http://git.io/pRYzMA | sh -s
+3. That's it. The install script will do its work and start the UniFi controller when it's finished.
+
 References
 ----------
 
