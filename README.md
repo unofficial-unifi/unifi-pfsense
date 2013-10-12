@@ -47,9 +47,9 @@ To install the whole shebang:
 1. Log in to your pfSense system via the command line.
 2. Run this one-liner which downloads the install script and pipes it into sh:
 
-```
+  ```
     fetch -o - http://git.io/pRYzMA | sh -s
-```
+  ```
 3. That's it. The install script will do its work and start the UniFi controller when it's finished.
 
 References
