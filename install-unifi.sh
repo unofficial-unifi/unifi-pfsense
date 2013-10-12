@@ -26,12 +26,15 @@ echo "Mounting new filesystems."
 cd `mktemp -d -t unifi`
 
 # Download the controller from Ubiquiti (assuming acceptance of the EULA):
+echo "Downloading the UniFi controller software..."
 /usr/bin/fetch http://dl.ubnt.com/unifi/2.4.5/UniFi.unix.zip
 
 # Unpack the archive into the /usr/local directory:
+echo "Installing UniFi controller in /usr/local..."
 /usr/local/bin/unzip UniFi.unix.zip -d /usr/local
 
 # Update Unifi's symbolic link for mongod to point to the version we just installed:
+echo "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 
 # Create the rc.d script for automatic startup/shutdown...
