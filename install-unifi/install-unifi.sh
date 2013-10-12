@@ -7,13 +7,13 @@
 if [ $(grep -c fdesc /etc/fstab) -eq 0 ]; then
   echo -n "Adding fdesc filesystem to /etc/fstab..."
   echo -e "fdesc\t\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0" >> /etc/fstab
-  echo "done."
+  echo " done."
 fi
 
 if [ $(grep -c proc /etc/fstab) -eq 0 ]; then
   echo -n "Adding procfs filesystem to /etc/fstab..."
   echo -e "proc\t\t\t/proc\t\tprocfs\trw\t\t0\t0" >> /etc/fstab
-  echo "done."
+  echo " done."
 fi
 
 # Run mount to mount the two new filesystems:
