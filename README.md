@@ -37,8 +37,8 @@ Challenges
 - It is not clear whether we can even download the software automatically from Ubiquiti according to the terms of the relevant licenses.
 - Version 3 of the UniFI software has just been released, and it is not clear what the differences are from v2 for the purposes of this project.
 
-Usage
------
+Installation
+------------
 
 The project now provides two working scripts: an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
 
@@ -51,6 +51,23 @@ To install the whole shebang:
     fetch -o - http://git.io/pRYzMA | sh -s
   ```
 3. That's it. The install script will do its work and start the UniFi controller when it's finished.
+
+Starting and Stopping
+---------------------
+
+In its present state, the only way to start and stop the controller is to use the freebsd `service` command:
+
+- To start the controller:
+
+  ```
+    service unifi start
+  ```
+- To stop the controller:
+
+  ```
+    service unifi stop
+  ```
+
 
 References
 ----------
