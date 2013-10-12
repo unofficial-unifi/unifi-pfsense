@@ -68,6 +68,9 @@ In its present state, the only way to start and stop the controller is to use th
     service unifi stop
   ```
 
+The UniFi controller takes quite a while to start. The 'start' command exits immediately while the startup continues in the background.
+
+Stopping the controller is an even stranger situation; the stop command itself takes a while to execute, and then the shutdown continues for several minutes in the background. However, when stopping, the rc script will wait and show some progress dots. The idea is to hold up system shutdown until the UniFi controller has had a chance to exit cleanly.
 
 References
 ----------
