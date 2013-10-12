@@ -6,12 +6,12 @@ A pfSense package that provides the UniFi Controller software.
 Purpose
 -------
 
-The UniFi Controller software from [Ubiquiti Networks](http://www.ubnt.com/) runs well on the underlying FreeBSD operating system used by [pfSense](http://www.pfsense.org/), but no package yet exists (publicly) for installing the UniFi Controller on pfSense. The objective of this project is to develop and maintain a package that provides the UniFi Controller software on pfSense platforms.
+The UniFi Controller software from [Ubiquiti Networks](http://www.ubnt.com/) runs well on the FreeBSD operating system used by [pfSense](http://www.pfsense.org/), but neither pfSense nor FreeBSD seems to have a package available for installing it. The objective of this project is to develop and maintain a package that provides the UniFi Controller software on pfSense and other FreeBSD-based platforms.
 
 Milestones
 ----------
 
-As a work in progress starting from scratch, the future is wide-open. Here is what is planned so far:
+Here's the plan:
 
 1. A simple, automated installation script that is concise, consistent, and reliable.
 2. A FreeBSD-style rc.d startup and shutdown script for starting and stopping the UniFi Controller software using the standard BSD services framework.
@@ -55,7 +55,7 @@ To install the whole shebang:
 Starting and Stopping
 ---------------------
 
-In its present state, the only way to start and stop the controller is to use the freebsd `service` command:
+In its present state, the only way to start and stop the controller is to use the freebsd `service` command.
 
 - To start the controller:
 
