@@ -4,10 +4,18 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # Add the fstab entries apparently required for OpenJDK 6:
-echo "fdesc /dev/fd fdescfs rw 0 0" >> /etc/fstab
-echo "proc /proc procfs rw 0 0" >> /etc/fstab
+if [ $(grep -c fdesc /etc/fstab) -eq 0 ]; then
+  echo "Adding fdesc filesystem to /etc/fstab..."
+  echo -e "fdesc\t\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0" >> /etc/fstab
+fi
+
+if [ $(grep -c proc /etc/fstab) -eq 0 ]; then
+  echo "Adding procfs filesystem to /etc/fstab..."
+  echo -e "proc\t\t\t/proc\t\tprocfs\trw\t\t0\t0" >> /etc/fstab
+fi
 
 # Run mount to mount the two new filesystems:
+echo "Mounting new filesystems."
 /sbin/mount -a
 
 # Install mongodb, OpenJDK 6, and unzip (required to unpack Ubiquiti's download):
