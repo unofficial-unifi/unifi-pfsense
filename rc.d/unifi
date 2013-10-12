@@ -32,7 +32,6 @@ unifi_stop()
 {
 
   if [ -f $pidfile ]; then
-
     echo -n "Signaling the UniFi controller to stop..."
 
     # This process does take a while, but the stop command finishes before
@@ -61,6 +60,8 @@ unifi_stop()
     rm $pidfile
 
     echo " stopped.";
+  else
+    echo "There is no pid file. The controller may not be running."
   fi
 }
 
