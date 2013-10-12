@@ -19,7 +19,8 @@ echo "Mounting new filesystems."
 /sbin/mount -a
 
 # Install mongodb, OpenJDK 6, and unzip (required to unpack Ubiquiti's download):
-/usr/sbin/pkg_add -r mongodb openjdk6 unzip
+# -F skips a package if it's already installed, without throwing an error.
+/usr/sbin/pkg_add -F -r mongodb openjdk6 unzip
 
 # Switch to a temp directory for the Unifi download:
 cd `mktemp -d -t unifi`
