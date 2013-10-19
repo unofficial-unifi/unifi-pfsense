@@ -3,6 +3,28 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# Stop the controller if it's already running...
+# First let's try the rc script if it exists:
+if [ -f /usr/local/etc/rc.d/unifi ]; then
+  echo -n "Stopping the unifi service..."
+  /usr/sbin/service unifi stop
+  echo " done."
+fi
+
+# Then to be doubly sure, let's make sure ace.jar isn't running for some other reason:
+if [ $(ps ax | grep -c "/usr/local/UniFi/lib/[a]ce.jar start") -ne 0 ]; then
+  echo -n "Killing ace.jar process..."
+  /bin/kill -15 `ps ax | grep "/usr/local/UniFi/lib/[a]ce.jar start" | awk '{ print $1 }'`
+  echo " done."
+fi
+
+# And then make sure mongodb doesn't have the db file open:
+if [ $(ps ax | grep -c "/usr/local/UniFi/data/[d]b") -ne 0 ]; then
+  echo -n "Killing mongod process..."
+  /bin/kill -15 `ps ax | grep "/usr/local/UniFi/data/[d]b" | awk '{ print $1 }'`
+  echo " done."
+fi
+
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
   echo "Backing up UniFi data..."
