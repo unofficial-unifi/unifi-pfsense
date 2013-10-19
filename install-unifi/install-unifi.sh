@@ -62,9 +62,12 @@ chmod +x /usr/local/etc/rc.d/unifi
 
 # Add the startup variable to rc.conf.local.
 # Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
-echo -n "Enabling the unifi service..."
-echo "unifi_enable=YES" >> /etc/rc.conf.local
-echo " done."
+# In the following comparison, we expect the 'or' operator to short-circuit, to make sure the file exists and avoid grep throwing an error.
+if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -eq 0 ]; then
+  echo -n "Enabling the unifi service..."
+  echo "unifi_enable=YES" >> /etc/rc.conf.local
+  echo " done."
+fi
 
 # Start it up:
 echo -n "Starting the unifi service..."
