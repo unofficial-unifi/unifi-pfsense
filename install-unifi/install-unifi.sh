@@ -3,6 +3,13 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# If an installation exists, we'll need to back up configuration:
+if [ -d /usr/local/UniFi/data ]; then
+  echo "Backing up UniFi data..."
+  backupfile=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
+  /usr/bin/tar -vczf $backupfile /usr/local/UniFi/data
+fi
+
 # Add the fstab entries apparently required for OpenJDK 6:
 if [ $(grep -c fdesc /etc/fstab) -eq 0 ]; then
   echo -n "Adding fdesc filesystem to /etc/fstab..."
