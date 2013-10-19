@@ -6,26 +6,29 @@ A pfSense package that provides the UniFi Controller software.
 Purpose
 -------
 
-The UniFi Controller software from [Ubiquiti Networks](http://www.ubnt.com/) runs well on the FreeBSD operating system used by [pfSense](http://www.pfsense.org/), but neither pfSense nor FreeBSD seems to have a package available for installing it. The objective of this project is to develop and maintain a package that provides the UniFi Controller software on pfSense and other FreeBSD-based platforms.
+The objective of this project is to develop and maintain a package that provides [Ubiquiti's](http://www.ubnt.com/) UniFi Controller software for the FreeBSD-based [pfSense](http://www.pfsense.org/) firewall project.
+
+Status
+------
+
+The project now provides two working scripts: an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
 
 Milestones
 ----------
 
-Here's the plan:
-
-1. A simple, automated installation script that is concise, consistent, and reliable.
-2. A FreeBSD-style rc.d startup and shutdown script for starting and stopping the UniFi Controller software using the standard BSD services framework.
-3. A FreeBSD port and package that specifies dependencies and automates installation of the UniFi Controller software.
-4. User-interface elements for pfSense for starting and stopping the UniFi Controller service and reporting on its status.
+1. ~~An installation script that is automatic, concise, consistent, and reliable.~~
+2. ~~An rc script for starting and stopping the UniFi Controller.~~
+3. A FreeBSD port and package for installing the UniFi Controller and related scripts.
+4. pfSense user interface elements for managing the UniFi Controller.
 5. A complete pfSense-style package.
 
-From there, we have a lot of other big ideas that may or may not ever happen or even be possible:
+Once the package is stable, we have some other big ideas:
 
-- Details in the pfSense side of the UI, including active APs, clients, and WLANs
-- Getting graph data for RRDtool
-- pfSense dashboard widget indicating AP status and users
-- Automated integration of UniFi's captive portal features with the corresponding features in pfSense
-- Other automated configuration, perhaps via the pfSense "wireless" tools
+- Detailed UniFi reporting in pfSense.
+- Graph data for RRDtool.
+- Dashboard widgets: AP status, connected users
+- Captive portal integration
+- Integrated "wireless" configuration
 - Backup and restore integration
 - Whatever else we can dig out of the API and mongodb
 
@@ -34,43 +37,41 @@ Challenges
 
 - Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly.
 - Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically.
-- It is not clear whether we can even download the software automatically from Ubiquiti according to the terms of the relevant licenses.
+- It is not clear whether we can even download the software automatically from Ubiquiti according to the terms of the relevant licenses, and Ubiquiti offers no guidance.
 - Version 3 of the UniFI software has just been released, and it is not clear what the differences are from v2 for the purposes of this project.
 
 Installation
 ------------
 
-The project now provides two working scripts: an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
+To install the controller software and the rc script:
 
-To install the whole shebang:
-
-1. Log in to your pfSense system via the command line.
-2. Run this one-liner which downloads the install script and pipes it into sh:
+1. Log in to the pfSense command line shell as root.
+2. Run this one-line command, which downloads the install script from Github and executes it with sh:
 
   ```
     fetch -o - http://git.io/pRYzMA | sh -s
   ```
-3. That's it. The install script will do its work and start the UniFi controller when it's finished.
+
+The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
 
 Starting and Stopping
 ---------------------
 
-In its present state, the only way to start and stop the controller is to use the freebsd `service` command.
+To start and stop the controller, use the `service` command from the command line.
 
 - To start the controller:
 
   ```
     service unifi start
   ```
+  The UniFi controller takes a few minutes to start. The 'start' command exits immediately while the startup continues in the background.
+
 - To stop the controller:
 
   ```
     service unifi stop
   ```
-
-The UniFi controller takes quite a while to start. The 'start' command exits immediately while the startup continues in the background.
-
-Stopping the controller is an even stranger situation; the stop command itself takes a while to execute, and then the shutdown continues for several minutes in the background. However, when stopping, the rc script will wait and show some progress dots. The idea is to hold up system shutdown until the UniFi controller has had a chance to exit cleanly.
+  The the stop command takes a while to execute, and then the shutdown continues for several minutes in the background. The rc script will wait until the command received and the shutdown is finished. The idea is to hold up system shutdown until the UniFi controller has a chance to exit cleanly.
 
 References
 ----------
