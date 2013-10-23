@@ -35,10 +35,18 @@ Once the package is stable, we have some other big ideas:
 Challenges
 ----------
 
-- Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly.
-- Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically.
-- It is not clear whether we can even download the software automatically from Ubiquiti according to the terms of the relevant licenses, and Ubiquiti offers no guidance.
+- Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly in a package. To work around this, we can download the UniFi controller software directly from Ubiquiti during the installation process.
+- Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically. It will be up to the package maintainer to keep the package up to date with the latest version of the software available from Ubiquiti.
 - Version 3 of the UniFI software has just been released, and it is not clear what the differences are from v2 for the purposes of this project.
+
+Licensing
+---------
+
+This project itself is licensed according to the two-clause BSD license.
+
+The UniFi Controller software is licensed as-is with no warranty, according to the README included with the software.
+
+[Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
 
 Installation
 ------------
