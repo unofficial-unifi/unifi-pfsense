@@ -91,6 +91,13 @@ if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -
   echo " done."
 fi
 
+# Restore the backup:
+if [ -f $backupfile ]; then
+  echo "Restoring UniFi data..."
+  mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
+  /usr/bin/tar -vxzf $backupfile
+fi
+
 # Start it up:
 echo -n "Starting the unifi service..."
 /usr/sbin/service unifi start
