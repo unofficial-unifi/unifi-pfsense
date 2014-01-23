@@ -65,8 +65,9 @@ echo -n "Downloading the UniFi controller software..."
 echo " done."
 
 # Unpack the archive into the /usr/local directory:
+# (the -o option overwrites the existing files without complaining)
 echo -n "Installing UniFi controller in /usr/local..."
-/usr/local/bin/unzip UniFi.unix.zip -d /usr/local
+/usr/local/bin/unzip -o UniFi.unix.zip -d /usr/local
 echo " done."
 
 # Update Unifi's symbolic link for mongod to point to the version we just installed:
@@ -92,7 +93,7 @@ if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -
 fi
 
 # Restore the backup:
-if [ -f $backupfile ]; then
+if [ ! -z "$backupfile" ] && [ -f $backupfile ]; then
   echo "Restoring UniFi data..."
   mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
   /usr/bin/tar -vxzf $backupfile
