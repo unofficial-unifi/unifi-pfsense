@@ -61,7 +61,7 @@ cd `mktemp -d -t unifi`
 
 # Download the controller from Ubiquiti (assuming acceptance of the EULA):
 echo -n "Downloading the UniFi controller software..."
-/usr/bin/fetch http://dl.ubnt.com/unifi/2.4.5/UniFi.unix.zip
+/usr/bin/fetch http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip
 echo " done."
 
 # Unpack the archive into the /usr/local directory:
