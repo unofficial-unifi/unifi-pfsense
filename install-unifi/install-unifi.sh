@@ -3,6 +3,12 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# Set the package source to the ftp package archive, since pfsense 2.1.x is
+# still using the EOL'd FreeBSD 8.3, and those packages are no longer
+# available in the primary repo:
+
+export PACKAGESITE=ftp://ftp-archive.freebsd.org/pub/FreeBSD-Archive/ports/`/usr/bin/uname -m`/packages-8.3-release/Latest/
+
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
 if [ -f /usr/local/etc/rc.d/unifi ]; then
@@ -32,7 +38,7 @@ if [ -d /usr/local/UniFi/data ]; then
   /usr/bin/tar -vczf $backupfile /usr/local/UniFi/data
 fi
 
-# Add the fstab entries apparently required for OpenJDK 6:
+# Add the fstab entries apparently required for OpenJDKse:
 if [ $(grep -c fdesc /etc/fstab) -eq 0 ]; then
   echo -n "Adding fdesc filesystem to /etc/fstab..."
   echo -e "fdesc\t\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0" >> /etc/fstab
@@ -50,10 +56,10 @@ echo -n "Mounting new filesystems..."
 /sbin/mount -a
 echo " done."
 
-# Install mongodb, OpenJDK 6, and unzip (required to unpack Ubiquiti's download):
+# Install mongodb, OpenJDK 7, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo -n "Installing required packages..."
-/usr/sbin/pkg_add -vFr mongodb openjdk6 unzip
+/usr/sbin/pkg_add -vFr mongodb openjdk7 unzip
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
