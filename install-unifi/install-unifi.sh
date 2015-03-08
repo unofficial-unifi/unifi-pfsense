@@ -3,8 +3,21 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # CONFIG OPTIONS
+# Note: I've set these as of 2015-03-07.
 UNIFI_SOFTWARE_URL="http://www.ubnt.com/downloads/unifi/3.2.10/UniFi.unix.zip"
-RC_SCRIPT_URL="https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi"
+RC_SCRIPT_URL="https://raw.githubusercontent.com/kohenkatz/unifi-pfsense/pfsense-2.2/rc.d/unifi"
+PFSENSE_VERSION_SUPPORTED="2.2-RELEASE"
+
+# TODO: 
+# A lot more work needs to happen here:
+# * pfSense 2.2 has changed the behavior of startup scripts completely.
+#   - Using /usr/local/etc/rc.d for any startup scripts doesn't work because you can't rely on /etc/rc.conf
+#   - This also breaks the default installation of the mongodb package.
+
+# Testing "upgrade" process/procedure.
+#   - Because I've not been able to test auto-upgrading, I almost want to rip out all upgrade-related tasks,
+#     and instead give the user a way to rm old installation, forcing them to backup their own data and restore it
+#     after we install (basically, new install).
 
 # ----- FUNCTIONS HERE ---- 
 
@@ -31,10 +44,19 @@ pkg_install()
 
 # ----- MAIN SCRIPT BEGINS ----
 
+# Let's be sure that we're running on pfSense 2.2.
+echo -n "Checking that we're running on pfSense version $PFSENSE_VERSION_SUPPORTED..."
+OS_VERSION=$(cat /etc/version)
+if [ "$OS_VERSION" != "2.2-RELEASE" ]; then
+  echo "ERROR: $OS_VERSION is not a supported version for this script."
+  exit 1
+fi
+
+
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
-if [ -f /usr/local/etc/rc.d/unifi ]; then
+if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
   echo -n "Stopping the unifi service..."
   /usr/sbin/service unifi stop
   echo " done."
@@ -103,6 +125,16 @@ pkg_install "openjdk8"
 pkg_install "unzip"
 echo "Done installing required packages."
 
+# Fixing mongodb so that it runs on pfSense 2.2
+# 2015-03-15 -- this is required today and it could break in the future?
+echo -n "Fixing mongodb startup script and enabling mongodb service..."
+mv /usr/local/etc/rc.d/mongod /usr/local/etc/rc.d/mongod.sh
+if [ ! -f /etc/rc.conf.local ] || [ $(grep -c mongod /etc/rc.conf.local) -eq 0 ]; then
+  echo "mongod_enable=YES" >> /etc/rc.conf.local
+fi
+echo "done."
+
+
 # Switch to a temp directory for the Unifi download:
 cd `mktemp -d -t unifi`
 
@@ -130,31 +162,33 @@ echo -n "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 echo " done."
 
-# # Fetch the rc script from github:
-# echo -n "Installing rc script..."
-# /usr/bin/fetch -o /usr/local/etc/rc.d/unifi https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi
-# echo " done."
+# Fetch the rc script from github:
+echo -n "Installing rc script..."
+/usr/bin/fetch -o /usr/local/etc/rc.d/unifi.sh $RC_SCRIPT_URL
+echo " done."
 
-# # Fix permissions so it'll run
-# chmod +x /usr/local/etc/rc.d/unifi
 
-# # Add the startup variable to rc.conf.local.
-# # Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
-# # In the following comparison, we expect the 'or' operator to short-circuit, to make sure the file exists and avoid grep throwing an error.
-# if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -eq 0 ]; then
-#   echo -n "Enabling the unifi service..."
-#   echo "unifi_enable=YES" >> /etc/rc.conf.local
-#   echo " done."
-# fi
 
-# # Restore the backup:
-# if [ ! -z "$backupfile" ] && [ -f $backupfile ]; then
-#   echo "Restoring UniFi data..."
-#   mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
-#   /usr/bin/tar -vxzf $backupfile
-# fi
+# Fix permissions so it'll run
+chmod +x /usr/local/etc/rc.d/unifi.sh
 
-# # Start it up:
-# echo -n "Starting the unifi service..."
-# /usr/sbin/service unifi start
-# echo " done."
+if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -eq 0 ]; then
+  echo -n "Enabling the unifi service..."
+  echo "unifi_enable=YES" >> /etc/rc.conf.local
+  echo ""
+  echo " done."
+fi
+
+
+# Restore the backup:
+if [ ! -z "$backupfile" ] && [ -f $backupfile ]; then
+  echo "Restoring UniFi data..."
+  mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
+  /usr/bin/tar -vxzf $backupfile
+fi
+
+# Start it up:
+echo -n "Starting the unifi service..."
+# /usr/local/etc/rc.d/mongod.sh start
+# /usr/local/etc/rc.d/unifi.sh start
+echo " done."
