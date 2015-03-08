@@ -52,8 +52,6 @@ if [ "$OS_VERSION" != "2.2-RELEASE" ]; then
   exit 1
 fi
 
-
-
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
 if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
@@ -125,16 +123,6 @@ pkg_install "openjdk8"
 pkg_install "unzip"
 echo "Done installing required packages."
 
-# Fixing mongodb so that it runs on pfSense 2.2
-# 2015-03-15 -- this is required today and it could break in the future?
-echo -n "Fixing mongodb startup script and enabling mongodb service..."
-mv /usr/local/etc/rc.d/mongod /usr/local/etc/rc.d/mongod.sh
-if [ ! -f /etc/rc.conf.local ] || [ $(grep -c mongod /etc/rc.conf.local) -eq 0 ]; then
-  echo "mongod_enable=YES" >> /etc/rc.conf.local
-fi
-echo "done."
-
-
 # Switch to a temp directory for the Unifi download:
 cd `mktemp -d -t unifi`
 
@@ -189,6 +177,5 @@ fi
 
 # Start it up:
 echo -n "Starting the unifi service..."
-# /usr/local/etc/rc.d/mongod.sh start
-# /usr/local/etc/rc.d/unifi.sh start
+/usr/local/etc/rc.d/unifi.sh start
 echo " done."
