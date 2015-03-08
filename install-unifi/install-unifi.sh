@@ -3,16 +3,22 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # CONFIG OPTIONS
+
 # Note: I've set these as of 2015-03-07.
+# Note: PFSENSE_VERSIONS_SUPPORTED is actually a list of versions supported, today, it's only 2.2-RELEASE,
+#       when 2.2.1 comes out and is tested and works, then you'll add it to the list, and it'll look like this
+#       PFSENSE_VERSIONS_SUPPORTED="2.2-RELEASE 2.2.1-RELEASE"
+
 # __PLEASE FIX RC_SCRIPT_URL WHEN YOU MERGE THIS PR__
+
 UNIFI_SOFTWARE_URL="http://www.ubnt.com/downloads/unifi/3.2.10/UniFi.unix.zip"
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gcohen55/unifi-pfsense/unifi-latest_3210/rc.d/unifi.sh"
-PFSENSE_VERSION_SUPPORTED="2.2-RELEASE"
+PFSENSE_VERSIONS_SUPPORTED="2.2-RELEASE"
 
 # ----- FUNCTIONS HERE ---- 
 
 # attempts to install package command. if it can't a missing package it will bail out.
-pkg_install()
+func_pkg_install()
 {
   echo -n "Attempting to install $1..."
   pkg info $1 > /dev/null 2>&1
@@ -31,16 +37,34 @@ pkg_install()
   fi
 }
 
+# checks that local pfSense version is supported. if not, it quits
+func_check_pfsense_version()
+{
+  OS_VERSION=$(cat /etc/version)
+  SUPPORTED_VERSION_CHECK=0
+  for SUPPORTED_VERSION in $PFSENSE_VERSIONS_SUPPORTED; do
+    if [ "$OS_VERSION" = "$SUPPORTED_VERSION" ]; then
+      # we found a match on a supported version.
+      SUPPORTED_VERSION_CHECK=1
+    fi
+  done
+
+  if [ $SUPPORTED_VERSION_CHECK -eq 0 ]; then
+    echo ""
+    echo "ERROR: pfSense version $OS_VERSION is not supported for auto-install."
+    echo "Supported Versions: $PFSENSE_VERSIONS_SUPPORTED"
+    echo "Exiting."
+    exit 1
+  fi
+}
 
 # ----- MAIN SCRIPT BEGINS ----
 
-# Let's be sure that we're running on pfSense 2.2:
-echo -n "Checking that we're running on pfSense version $PFSENSE_VERSION_SUPPORTED..."
-OS_VERSION=$(cat /etc/version)
-if [ "$OS_VERSION" != "2.2-RELEASE" ]; then
-  echo "ERROR: $OS_VERSION is not a supported version for this script."
-  exit 1
-fi
+# Let's be sure that we're running on a supported version of pfSense
+# (defined in config options)
+echo -n "Checking that we're running on a supported pfSense version..."
+func_check_pfsense_version
+echo " done"
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
@@ -107,9 +131,9 @@ fi
 
 # Install mongodb, OpenJDK 8, and unzip (required to unpack Ubiquiti's download):
 echo "Installing required packages..."
-pkg_install "mongodb"
-pkg_install "openjdk"
-pkg_install "unzip"
+func_pkg_install "mongodb"
+func_pkg_install "openjdk"
+func_pkg_install "unzip"
 echo "Done installing required packages."
 
 # Switch to a temp directory for the Unifi download:

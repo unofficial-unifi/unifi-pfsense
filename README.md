@@ -37,7 +37,6 @@ Challenges
 
 - Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly in a package. To work around this, we can download the UniFi controller software directly from Ubiquiti during the installation process.
 - Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically. It will be up to the package maintainer to keep the package up to date with the latest version of the software available from Ubiquiti.
-- Version 3 of the UniFI software has just been released, and it is not clear what the differences are from v2 for the purposes of this project.
 
 Licensing
 ---------
@@ -47,6 +46,12 @@ This project itself is licensed according to the two-clause BSD license.
 The UniFi Controller software is licensed as-is with no warranty, according to the README included with the software.
 
 [Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
+
+Requirements
+------------
+- This version of the script is currently only tested and working on a clean pfSense 2.2.
+- Be sure you have enough drive space available. UniFi software relies on MongoDB. In my test environment, it requires ~3.5GB available.
+- You can't run this on a NanoBSD pfSense. Don't try to hack this onto a NanoBSD pfSense distribution and destroy your flash in a few days or weeks.
 
 Installation
 ------------
@@ -81,8 +86,16 @@ To start and stop the controller, use the `service` command from the command lin
   ```
   The the stop command takes a while to execute, and then the shutdown continues for several minutes in the background. The rc script will wait until the command received and the shutdown is finished. The idea is to hold up system shutdown until the UniFi controller has a chance to exit cleanly.
 
+Known Issues / Caveats  
+----------------------
+- If you restore a backup through the UniFi web interface, it will restore the backup, stop the unifi services and not start them. You'll have to manually start the services again, or you can reboot pfSense through the pfSense admin portal.
+- This script has not been extensively tested when installing on "unclean" pfSense systems, eg, pfSense installations that have been customized with any additional packages.
+- Be Careful. Be sure you have full backup of your pfSense system and your UniFi controller (if not a new install). While we tried to make installation script safe, anything is possible. 
+
+
 References
 ----------
+
 
 These sources of information immediately come to mind:
 
@@ -90,3 +103,4 @@ These sources of information immediately come to mind:
 - [UniFI download and documentation](http://www.ubnt.com/download#UniFi:AP)
 - [UniFi updates blog](http://community.ubnt.com/t5/UniFi-Updates-Blog/bg-p/Blog_UniFi)
 - [pfSense: Developing Packages](https://doc.pfsense.org/index.php/Developing_Packages)
+
