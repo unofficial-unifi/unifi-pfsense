@@ -9,17 +9,6 @@ UNIFI_SOFTWARE_URL="http://www.ubnt.com/downloads/unifi/3.2.10/UniFi.unix.zip"
 RC_SCRIPT_URL="https://raw.githubusercontent.com/kohenkatz/unifi-pfsense/pfsense-2.2/rc.d/unifi"
 PFSENSE_VERSION_SUPPORTED="2.2-RELEASE"
 
-# TODO: 
-# A lot more work needs to happen here:
-# * pfSense 2.2 has changed the behavior of startup scripts completely.
-#   - Using /usr/local/etc/rc.d for any startup scripts doesn't work because you can't rely on /etc/rc.conf
-#   - This also breaks the default installation of the mongodb package.
-
-# Testing "upgrade" process/procedure.
-#   - Because I've not been able to test auto-upgrading, I almost want to rip out all upgrade-related tasks,
-#     and instead give the user a way to rm old installation, forcing them to backup their own data and restore it
-#     after we install (basically, new install).
-
 # ----- FUNCTIONS HERE ---- 
 
 # attempts to install package command. if it can't a missing package it will bail out.
@@ -177,3 +166,4 @@ fi
 echo -n "Starting the unifi service..."
 /usr/local/etc/rc.d/unifi.sh start
 echo " done."
+
