@@ -163,6 +163,6 @@ fi
 
 # Start it up:
 echo -n "Starting the unifi service..."
-/usr/local/etc/rc.d/unifi.sh start
+service unifi.sh start
 echo " done."
 
