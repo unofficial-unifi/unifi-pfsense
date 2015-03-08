@@ -34,7 +34,7 @@ pkg_install()
 
 # ----- MAIN SCRIPT BEGINS ----
 
-# Let's be sure that we're running on pfSense 2.2.
+# Let's be sure that we're running on pfSense 2.2:
 echo -n "Checking that we're running on pfSense version $PFSENSE_VERSION_SUPPORTED..."
 OS_VERSION=$(cat /etc/version)
 if [ "$OS_VERSION" != "2.2-RELEASE" ]; then
@@ -71,7 +71,7 @@ if [ -d /usr/local/UniFi/data ]; then
   /usr/bin/tar -vczf $backupfile /usr/local/UniFi/data
 fi
 
-# Add the fstab entries apparently required for OpenJDKse:
+# Add the fstab entries apparently required for OpenJDK:
 if [ $(grep -c fdesc /etc/fstab) -eq 0 ]; then
   echo -n "Adding fdesc filesystem to /etc/fstab..."
   echo -e "fdesc\t\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0" >> /etc/fstab
@@ -90,7 +90,7 @@ echo -n "Mounting new filesystems..."
 echo " done."
 
 
-# Check of the pkg manager is installed if not, install it.
+# Check of the pkg manager is installed if not, install it:
 if ! pkg -N 2> /dev/null; then
   echo -n "FreeBSD pkgng not installed. Installing..."
   env ASSUME_ALWAYS_YES=YES pkg bootstrap
@@ -98,15 +98,14 @@ if ! pkg -N 2> /dev/null; then
 fi
 
 
-# at this point, pkg should be installed. if it's not, we should probably quit.
+# at this point, pkg should be installed. if it's not, we should probably quit:
 if ! pkg -N 2> /dev/null; then
   echo "ERROR: pkgng installation failed. Exiting."
   exit 1
 fi
 
 
-# Install mongodb, OpenJDK 7, and unzip (required to unpack Ubiquiti's download):
-# -F skips a package if it's already installed, without throwing an error.
+# Install mongodb, OpenJDK 8, and unzip (required to unpack Ubiquiti's download):
 echo "Installing required packages..."
 pkg_install "mongodb"
 pkg_install "openjdk8"
@@ -145,7 +144,7 @@ echo -n "Installing rc script..."
 /usr/bin/fetch -o /usr/local/etc/rc.d/unifi.sh $RC_SCRIPT_URL
 echo " done."
 
-# Fix permissions so it'll run
+# Fix permissions so it'll run:
 chmod +x /usr/local/etc/rc.d/unifi.sh
 
 if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -eq 0 ]; then
