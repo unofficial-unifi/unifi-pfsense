@@ -20,6 +20,12 @@ unifi_start()
   if checkyesno ${rcvar}; then
     echo "Starting UniFi controller. "
 
+    # since unifi in 3.2.10 does this whole try to connect locally on port 8080 and takes like 
+    # 10 minutes to do this
+    # this will open up netcat to listen on port 8080, and then close the connection immediately, then quit.
+    # leaving 8080 open for the actual service.
+    echo "" | nc -l 127.0.0.1 8080 >/dev/null &
+
     # The process will run until it is terminated and does not fork on its own.
     # So we start it in the background and stash the pid:
     /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar start &

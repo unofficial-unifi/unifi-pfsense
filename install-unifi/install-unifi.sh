@@ -6,7 +6,7 @@
 # Note: I've set these as of 2015-03-07.
 # __PLEASE FIX RC_SCRIPT_URL WHEN YOU MERGE THIS PR__
 UNIFI_SOFTWARE_URL="http://www.ubnt.com/downloads/unifi/3.2.10/UniFi.unix.zip"
-RC_SCRIPT_URL="https://raw.githubusercontent.com/kohenkatz/unifi-pfsense/pfsense-2.2/rc.d/unifi"
+RC_SCRIPT_URL="https://raw.githubusercontent.com/gcohen55/unifi-pfsense/unifi-latest_3210/rc.d/unifi.sh"
 PFSENSE_VERSION_SUPPORTED="2.2-RELEASE"
 
 # ----- FUNCTIONS HERE ---- 
