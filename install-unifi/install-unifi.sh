@@ -108,7 +108,7 @@ fi
 # Install mongodb, OpenJDK 8, and unzip (required to unpack Ubiquiti's download):
 echo "Installing required packages..."
 pkg_install "mongodb"
-pkg_install "openjdk8"
+pkg_install "openjdk"
 pkg_install "unzip"
 echo "Done installing required packages."
 
