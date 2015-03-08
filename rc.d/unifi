@@ -7,7 +7,7 @@
 . /etc/rc.subr
 
 name="unifi"
-rcvar=`set_rcvar`
+rcvar="unifi_enable"
 start_cmd="unifi_start"
 stop_cmd="unifi_stop"
 
