@@ -5,9 +5,9 @@
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
-if [ -f /usr/local/etc/rc.d/unifi ]; then
+if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
   echo -n "Stopping the unifi service..."
-  /usr/sbin/service unifi stop
+  /usr/sbin/service unifi.sh stop
   echo " done."
 fi
 
@@ -77,11 +77,11 @@ echo " done."
 
 # Fetch the rc script from github:
 echo -n "Installing rc script..."
-/usr/bin/fetch -o /usr/local/etc/rc.d/unifi https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi
+/usr/bin/fetch -o /usr/local/etc/rc.d/unifi.sh https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi
 echo " done."
 
 # Fix permissions so it'll run
-chmod +x /usr/local/etc/rc.d/unifi
+chmod +x /usr/local/etc/rc.d/unifi.sh
 
 # Add the startup variable to rc.conf.local.
 # Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
@@ -101,5 +101,5 @@ fi
 
 # Start it up:
 echo -n "Starting the unifi service..."
-/usr/sbin/service unifi start
+/usr/sbin/service unifi.sh start
 echo " done."
