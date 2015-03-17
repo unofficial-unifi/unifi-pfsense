@@ -50,10 +50,10 @@ echo -n "Mounting new filesystems..."
 /sbin/mount -a
 echo " done."
 
-# Install mongodb, OpenJDK 7, and unzip (required to unpack Ubiquiti's download):
+# Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo -n "Installing required packages..."
-/usr/sbin/pkg_add -vFr mongodb openjdk7 unzip
+/usr/sbin/pkg_add -vFr mongodb openjdk unzip
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
