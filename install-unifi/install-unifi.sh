@@ -6,6 +6,9 @@
 # The latest version of UniFi:
 UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip"
 
+# The rc script associated with this branch or fork:
+RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/rc.d/unifi"
+
 # Set the package source to the ftp package archive, since pfsense 2.1.x is
 # still using the EOL'd FreeBSD 8.3, and those packages are no longer
 # available in the primary repo:
@@ -86,7 +89,7 @@ echo " done."
 
 # Fetch the rc script from github:
 echo -n "Installing rc script..."
-/usr/bin/fetch -o /usr/local/etc/rc.d/unifi https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi
+/usr/bin/fetch -o /usr/local/etc/rc.d/unifi ${RC_SCRIPT_URL}
 echo " done."
 
 # Fix permissions so it'll run
