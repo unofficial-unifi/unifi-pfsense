@@ -77,7 +77,7 @@ echo " done."
 
 # Fetch the rc script from github:
 echo -n "Installing rc script..."
-/usr/bin/fetch -o /usr/local/etc/rc.d/unifi.sh https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi
+/usr/bin/fetch -o /usr/local/etc/rc.d/unifi.sh https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh
 echo " done."
 
 # Fix permissions so it'll run
