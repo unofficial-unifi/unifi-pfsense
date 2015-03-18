@@ -40,8 +40,8 @@ fi
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
   echo "Backing up UniFi data..."
-  backupfile=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
-  /usr/bin/tar -vczf $backupfile /usr/local/UniFi/data
+  BACKUPFILE=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
+  /usr/bin/tar -vczf ${BACKUPFILE} /usr/local/UniFi/data
 fi
 
 # Add the fstab entries apparently required for OpenJDKse:
@@ -105,10 +105,10 @@ if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -
 fi
 
 # Restore the backup:
-if [ ! -z "$backupfile" ] && [ -f $backupfile ]; then
+if [ ! -z "${BACKUPFILE}" ] && [ -f ${BACKUPFILE} ]; then
   echo "Restoring UniFi data..."
   mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
-  /usr/bin/tar -vxzf $backupfile
+  /usr/bin/tar -vxzf ${BACKUPFILE}
 fi
 
 # Start it up:
