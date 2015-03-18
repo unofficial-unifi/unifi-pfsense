@@ -3,6 +3,9 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# The latest version of UniFi:
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip"
+
 # Set the package source to the ftp package archive, since pfsense 2.1.x is
 # still using the EOL'd FreeBSD 8.3, and those packages are no longer
 # available in the primary repo:
@@ -67,7 +70,7 @@ cd `mktemp -d -t unifi`
 
 # Download the controller from Ubiquiti (assuming acceptance of the EULA):
 echo -n "Downloading the UniFi controller software..."
-/usr/bin/fetch http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip
+/usr/bin/fetch ${UNIFI_SOFTWARE_URL}
 echo " done."
 
 # Unpack the archive into the /usr/local directory:
