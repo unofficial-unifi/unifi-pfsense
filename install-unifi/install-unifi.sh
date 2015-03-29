@@ -9,17 +9,11 @@ UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip"
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/rc.d/unifi"
 
-# Set the package source to the ftp package archive, since pfsense 2.1.x is
-# still using the EOL'd FreeBSD 8.3, and those packages are no longer
-# available in the primary repo:
-
-export PACKAGESITE=ftp://ftp-archive.freebsd.org/pub/FreeBSD-Archive/ports/`/usr/bin/uname -m`/packages-8.3-release/Latest/
-
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
-if [ -f /usr/local/etc/rc.d/unifi ]; then
+if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
   echo -n "Stopping the unifi service..."
-  /usr/sbin/service unifi stop
+  /usr/sbin/service unifi.sh stop
   echo " done."
 fi
 
@@ -62,10 +56,10 @@ echo -n "Mounting new filesystems..."
 /sbin/mount -a
 echo " done."
 
-# Install mongodb, OpenJDK 7, and unzip (required to unpack Ubiquiti's download):
+# Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo -n "Installing required packages..."
-/usr/sbin/pkg_add -vFr mongodb openjdk7 unzip
+/usr/sbin/pkg_add -vFr mongodb openjdk unzip
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
@@ -93,7 +87,7 @@ echo -n "Installing rc script..."
 echo " done."
 
 # Fix permissions so it'll run
-chmod +x /usr/local/etc/rc.d/unifi
+chmod +x /usr/local/etc/rc.d/unifi.sh
 
 # Add the startup variable to rc.conf.local.
 # Eventually, this step will need to be folded into pfSense, which manages the main rc.conf.
@@ -113,5 +107,5 @@ fi
 
 # Start it up:
 echo -n "Starting the unifi service..."
-/usr/sbin/service unifi start
+/usr/sbin/service unifi.sh start
 echo " done."

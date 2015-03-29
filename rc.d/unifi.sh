@@ -7,13 +7,13 @@
 . /etc/rc.subr
 
 name="unifi"
-rcvar=`set_rcvar`
+rcvar="unifi_enable"
 start_cmd="unifi_start"
 stop_cmd="unifi_stop"
 
 pidfile="/var/run/${name}.pid"
 
-load_rc_config $name
+load_rc_config ${name}
 
 unifi_start()
 {
