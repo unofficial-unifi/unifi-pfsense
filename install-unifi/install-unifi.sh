@@ -3,6 +3,12 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# The latest version of UniFi:
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip"
+
+# The rc script associated with this branch or fork:
+RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/rc.d/unifi"
+
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
 if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
@@ -28,8 +34,8 @@ fi
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
   echo "Backing up UniFi data..."
-  backupfile=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
-  /usr/bin/tar -vczf $backupfile /usr/local/UniFi/data
+  BACKUPFILE=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
+  /usr/bin/tar -vczf ${BACKUPFILE} /usr/local/UniFi/data
 fi
 
 # Add the fstab entries apparently required for OpenJDKse:
@@ -61,7 +67,7 @@ cd `mktemp -d -t unifi`
 
 # Download the controller from Ubiquiti (assuming acceptance of the EULA):
 echo -n "Downloading the UniFi controller software..."
-/usr/bin/fetch http://dl.ubnt.com/unifi/2.4.6/UniFi.unix.zip
+/usr/bin/fetch ${UNIFI_SOFTWARE_URL}
 echo " done."
 
 # Unpack the archive into the /usr/local directory:
@@ -77,7 +83,7 @@ echo " done."
 
 # Fetch the rc script from github:
 echo -n "Installing rc script..."
-/usr/bin/fetch -o /usr/local/etc/rc.d/unifi.sh https://raw.github.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh
+/usr/bin/fetch -o /usr/local/etc/rc.d/unifi ${RC_SCRIPT_URL}
 echo " done."
 
 # Fix permissions so it'll run
@@ -93,10 +99,10 @@ if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -
 fi
 
 # Restore the backup:
-if [ ! -z "$backupfile" ] && [ -f $backupfile ]; then
+if [ ! -z "${BACKUPFILE}" ] && [ -f ${BACKUPFILE} ]; then
   echo "Restoring UniFi data..."
   mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
-  /usr/bin/tar -vxzf $backupfile
+  /usr/bin/tar -vxzf ${BACKUPFILE}
 fi
 
 # Start it up:
