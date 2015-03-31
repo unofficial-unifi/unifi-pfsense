@@ -56,7 +56,7 @@ To install the controller software and the rc script:
 2. Run this one-line command, which downloads the install script from Github and executes it with sh:
 
   ```
-    fetch -o - http://git.io/pRYzMA | sh -s
+    fetch -o - http://git.io/j7Jy | sh -s
   ```
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
