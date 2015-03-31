@@ -9,6 +9,19 @@ UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/3.2.10/UniFi.unix.zip"
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
 
+# If pkg-ng is not yet installed, bootstrap it:
+if ! /usr/sbin/pkg -N 2> /dev/null; then
+  echo "FreeBSD pkgng not installed. Installing..."
+  env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap
+  echo " done."
+fi
+
+# If installation failed, exit:
+if ! /usr/sbin/pkg -N 2> /dev/null; then
+  echo "ERROR: pkgng installation failed. Exiting."
+  exit 1
+fi
+
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
 if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
@@ -58,8 +71,8 @@ echo " done."
 
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
-echo -n "Installing required packages..."
-/usr/sbin/pkg_add -vFr mongodb openjdk unzip
+echo "Installing required packages..."
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
