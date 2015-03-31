@@ -18,7 +18,7 @@ Milestones
 
 1. ~~An installation script that is automatic, concise, consistent, and reliable.~~
 2. ~~An rc script for starting and stopping the UniFi Controller.~~
-3. A FreeBSD port and package for installing the UniFi Controller and related scripts.
+3. Custom package repository for development.
 4. pfSense user interface elements for managing the UniFi Controller.
 5. A complete pfSense-style package.
 
