@@ -69,14 +69,14 @@ To start and stop the controller, use the `service` command from the command lin
 - To start the controller:
 
   ```
-    service unifi start
+    service unifi.sh start
   ```
   The UniFi controller takes a few minutes to start. The 'start' command exits immediately while the startup continues in the background.
 
 - To stop the controller:
 
   ```
-    service unifi stop
+    service unifi.sh stop
   ```
   The the stop command takes a while to execute, and then the shutdown continues for several minutes in the background. The rc script will wait until the command received and the shutdown is finished. The idea is to hold up system shutdown until the UniFi controller has a chance to exit cleanly.
 
