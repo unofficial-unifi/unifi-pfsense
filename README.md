@@ -37,7 +37,6 @@ Challenges
 
 - Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly in a package. To work around this, we can download the UniFi controller software directly from Ubiquiti during the installation process.
 - Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically. It will be up to the package maintainer to keep the package up to date with the latest version of the software available from Ubiquiti.
-- Version 3 of the UniFI software has just been released, and it is not clear what the differences are from v2 for the purposes of this project.
 
 Licensing
 ---------
