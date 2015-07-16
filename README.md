@@ -47,6 +47,11 @@ The UniFi Controller software is licensed as-is with no warranty, according to t
 
 [Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
 
+Upgrading from 3.2
+------------------
+
+Be sure to backup your configuration under 3.2 through the web admin UI before upgrading. The upgrade from 3.2 does not appear to go smoothly simply by archiving and restoring the /var/UniFi directory. You will need to use the web admin UI backup tool to create an .unf file, which you can then restore to 4.6.6 when it loads.
+
 Installation
 ------------
 
