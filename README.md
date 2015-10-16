@@ -50,7 +50,7 @@ The UniFi Controller software is licensed as-is with no warranty, according to t
 Upgrading from 3.2
 ------------------
 
-Be sure to backup your configuration under 3.2 through the web admin UI before upgrading. The upgrade from 3.2 does not appear to go smoothly simply by archiving and restoring the /var/UniFi directory. You will need to use the web admin UI backup tool to create an .unf file, which you can then restore to 4.6.6 when it loads.
+Be sure to backup your configuration under 3.2 through the web admin UI before upgrading. The upgrade from 3.2 does not appear to go smoothly simply by archiving and restoring the /var/UniFi directory. You will need to use the web admin UI backup tool to create an .unf file, which you can then restore to 4.7.5 when it loads.
 
 Installation
 ------------
@@ -61,7 +61,7 @@ To install the controller software and the rc script:
 2. Run this one-line command, which downloads the install script from Github and executes it with sh (points to current 4.6.6 branch):
 
   ```
-    fetch -o - http://git.io/vmqMx | sh -s
+    fetch -o - http://git.io/j7Jy | sh -s
   ```
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
