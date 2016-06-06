@@ -3,6 +3,9 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# OS architecture
+OS_ARCH=`getconf LONG_BIT`
+
 # The latest version of UniFi:
 UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.0.6/UniFi.unix.zip"
 
@@ -10,7 +13,7 @@ UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.0.6/UniFi.unix.zip"
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
 
 #FreeBSD package source:
-FREEBSD_PACKAGE_URL="http://pkg.freebsd.org/freebsd:10:x86:64/latest/All/"
+FREEBSD_PACKAGE_URL="http://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/"
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -136,7 +139,7 @@ echo " done."
 
 # Replace snappy java library to support AP adoption with latest firmware
 echo -n "Updating snappy java..."
-fetch http://pkg.freebsd.org/freebsd:10:x86:64/latest/All/snappyjava-1.0.4.1_2.txz
+fetch http://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-1.0.4.1_2.txz
 tar vfx snappyjava-1.0.4.1_2.txz
 mv /usr/local/UniFi/lib/snappy-java-1.0.5.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar.backup
 cp ./usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar
