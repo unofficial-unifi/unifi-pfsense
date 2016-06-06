@@ -3,6 +3,9 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# OS architecture
+OS_ARCH=`getconf LONG_BIT`
+
 # The latest version of UniFi:
 UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.0.6/UniFi.unix.zip"
 
@@ -10,7 +13,13 @@ UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.0.6/UniFi.unix.zip"
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
 
 #FreeBSD package source:
-FREEBSD_PACKAGE_URL="http://pkg.freebsd.org/freebsd:10:x86:64/latest/All/"
+FREEBSD_PACKAGE_URL="http://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/"
+
+#FreeBSD package list:
+FREEBSD_PACKAGE_LIST_URL="http://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz"
+
+#JSON shell parser script:
+JSON_PARSER_URL="https://raw.githubusercontent.com/dominictarr/JSON.sh/master/JSON.sh"
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -77,6 +86,23 @@ echo " done."
 echo "Installing required packages..."
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
+
+fetch ${FREEBSD_PACKAGE_LIST_URL}
+tar vfx packagesite.txz
+fetch ${JSON_PARSER_URL}
+chmod +x JSON.sh
+
+GetDeps () {
+        deps=( $(grep "\"name\":\"$1\"" packagesite.yaml | ./JSON.sh -l | pcregrep -o1 -o2 --om-separator=" " '^\["deps"\,"(.*)","version"\]\s+"(.*)"$') )
+        for dep in "${deps[@]}"
+        do
+                echo $dep
+        done
+}
+
+GetDeps mongodb
+
+
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}snappy-1.1.3.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}python2-2_3.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}v8-3.18.5_1.txz
@@ -136,7 +162,7 @@ echo " done."
 
 # Replace snappy java library to support AP adoption with latest firmware
 echo -n "Updating snappy java..."
-fetch http://pkg.freebsd.org/freebsd:10:x86:64/latest/All/snappyjava-1.0.4.1_2.txz
+fetch http://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-1.0.4.1_2.txz
 tar vfx snappyjava-1.0.4.1_2.txz
 mv /usr/local/UniFi/lib/snappy-java-1.0.5.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar.backup
 cp ./usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar
