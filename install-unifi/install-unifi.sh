@@ -7,7 +7,7 @@
 OS_ARCH=`getconf LONG_BIT`
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.2.9/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.3.8/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -83,7 +83,7 @@ tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}snappy-1.1.3.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}python2-2_3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}v8-3.18.5_1.txz
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}v8-3.18.5_2.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mongodb-2.6.12.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}unzip-6.0_7.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}pcre-8.39.txz
@@ -98,7 +98,7 @@ env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXau-1.0.8_3
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libxcb-1.12.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libICE-1.0.9_1,1.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libSM-1.2.2_3,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}java-zoneinfo-2016.g.txz
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}java-zoneinfo-2016.i.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}fixesproto-5.0.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}xextproto-7.3.0.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}inputproto-2.3.2.txz
@@ -110,7 +110,7 @@ env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXt-1.1.5,1.
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libfontenc-1.1.3.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mkfontscale-1.1.2.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mkfontdir-1.0.7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}dejavu-2.35.txz
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}dejavu-2.37.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}recordproto-1.14.2.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXtst-1.2.3.txz
 env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}renderproto-0.11.1.txz
