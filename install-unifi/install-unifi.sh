@@ -15,6 +15,13 @@ RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/r
 #FreeBSD package source:
 FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/"
 
+#FreeBSD package list: 
+FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz" 
+ 
+#JSON shell parser script: 
+JSON_PARSER_URL="https://raw.githubusercontent.com/dominictarr/JSON.sh/master/JSON.sh" 
+
+
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
   echo "FreeBSD pkgng not installed. Installing..."
@@ -81,44 +88,58 @@ echo "Installing required packages..."
 tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}snappy-1.1.4.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}python2-2_3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}v8-3.18.5_2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mongodb-2.6.12.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}unzip-6.0_7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}pcre-8.40.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}alsa-lib-1.1.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}freetype2-2.6.3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}fontconfig-2.12.1,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}xproto-7.0.31.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}kbproto-1.0.7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXdmcp-1.1.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libpthread-stubs-0.3_6.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXau-1.0.8_3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libxcb-1.12.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libICE-1.0.9_1,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libSM-1.2.2_3,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}java-zoneinfo-2016.j.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}fixesproto-5.0.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}xextproto-7.3.0.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}inputproto-2.3.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libX11-1.6.4,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXfixes-5.0.3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXext-1.3.3_1,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXi-1.7.9,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXt-1.1.5,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libfontenc-1.1.3_1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mkfontscale-1.1.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mkfontdir-1.0.7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}dejavu-2.37.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}recordproto-1.14.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXtst-1.2.3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}renderproto-0.11.1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXrender-0.9.10.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}javavmwrapper-2.5_2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}giflib-5.1.4.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}openjdk8-8.121.13.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}snappyjava-1.0.4.1_2.txz
+
+fetch ${FREEBSD_PACKAGE_LIST_URL} 
+tar vfx packagesite.txz 
+fetch ${JSON_PARSER_URL} 
+chmod +x JSON.sh
+
+AddPkg () { 
+	pkgname=$1	
+	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
+	pkgvers=`echo $pkginfo | ./JSON.sh -l | pcregrep -o1 '^\["version"\]\s+"(.*)"$'`
+
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz 
+}
+ 
+AddPkg snappy
+AddPkg python2
+AddPkg v8
+AddPkg mongodb
+AddPkg unzip
+AddPkg pcre
+AddPkg alsa-lib
+AddPkg freetype2
+AddPkg fontconfig
+AddPkg xproto
+AddPkg kbproto
+AddPkg libXdmcp
+AddPkg libpthread-stubs
+AddPkg libXau
+AddPkg libxcb
+AddPkg libICE
+AddPkg libSM
+AddPkg java-zoneinfo
+AddPkg fixesproto
+AddPkg xextproto
+AddPkg inputproto
+AddPkg libX11
+AddPkg libXfixes
+AddPkg libXext
+AddPkg libXi
+AddPkg libXt
+AddPkg libfontenc
+AddPkg mkfontscale
+AddPkg mkfontdir
+AddPkg dejavu
+AddPkg recordproto
+AddPkg libXtst
+AddPkg renderproto
+AddPkg libXrender
+AddPkg javavmwrapper
+AddPkg giflib
+AddPkg openjdk8
+AddPkg snappyjava
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
