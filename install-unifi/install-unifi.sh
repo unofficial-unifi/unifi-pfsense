@@ -166,6 +166,13 @@ echo -n "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 echo " done."
 
+# If partition size is < 4GB, add smallfiles option to mongodb
+echo -n "Checking partition size..."
+if [ `df -k | awk '$NF=="/"{print $2}'` -le 4194302 ]; then
+	echo -e "\nunifi.db.extraargs=--smallfiles\n" >> /usr/local/UniFi/data/system.properties
+fi
+echo " done."
+
 # Replace snappy java library to support AP adoption with latest firmware:
 echo -n "Updating snappy java..."
 fetch https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-${snappyjavavers}.txz
