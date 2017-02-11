@@ -140,7 +140,7 @@ AddPkg openjdk8
 AddPkg snappyjava
 
 # Save current snappyjava version for later:
-snappyjavavers=`grep "\"name\":\"$pkgname\"" packagesite.yaml | pcregrep -o1 '"version":"(.*?)"' | head -1`
+snappyjavavers=`grep "\"name\":\"snappyjava\"" packagesite.yaml | pcregrep -o1 '"version":"(.*?)"' | head -1`
 
 # Clean up downloaded package manifest:
 rm packagesite.*
