@@ -93,7 +93,7 @@ AddPkg () {
 	pkgname=$1	
 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-	if [ `pkg info | grep -q $pkgname-$pkgvers`=0 ]; then
+	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
 		echo "Package $pkgname-$pkgvers already installed."
 	else
 		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz 
@@ -138,6 +138,13 @@ AddPkg javavmwrapper
 AddPkg giflib
 AddPkg openjdk8
 AddPkg snappyjava
+
+# Save current snappyjava version for later:
+snappyjavavers=`grep "\"name\":\"$pkgname\"" packagesite.yaml | pcregrep -o1 '"version":"(.*?)"' | head -1`
+
+# Clean up downloaded package manifest:
+rm packagesite.*
+
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
@@ -159,14 +166,14 @@ echo -n "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 echo " done."
 
-# Replace snappy java library to support AP adoption with latest firmware
+# Replace snappy java library to support AP adoption with latest firmware:
 echo -n "Updating snappy java..."
-fetch https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-1.0.4.1_2.txz
-tar vfx snappyjava-1.0.4.1_2.txz
+fetch https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-${snappyjavavers}.txz
+tar vfx snappyjava-${snappyjavavers}.txz
 mv /usr/local/UniFi/lib/snappy-java-1.0.5.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar.backup
 cp ./usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar
 rm -Rf ./usr
-rm snappyjava-1.0.4.1_2.txz
+rm snappyjava-${snappyjavavers}.txz
 echo " done."
 
 # Fetch the rc script from github:
