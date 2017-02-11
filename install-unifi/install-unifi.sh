@@ -17,9 +17,6 @@ FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/Al
 
 #FreeBSD package list: 
 FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz" 
- 
-#JSON shell parser script: 
-JSON_PARSER_URL="https://raw.githubusercontent.com/dominictarr/JSON.sh/master/JSON.sh" 
 
 
 # If pkg-ng is not yet installed, bootstrap it:
@@ -91,15 +88,16 @@ tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 
 fetch ${FREEBSD_PACKAGE_LIST_URL} 
 tar vfx packagesite.txz 
-fetch ${JSON_PARSER_URL} 
-chmod +x JSON.sh
 
 AddPkg () { 
 	pkgname=$1	
 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
-	pkgvers=`echo $pkginfo | ./JSON.sh -l | pcregrep -o1 '^\["version"\]\s+"(.*)"$'`
-
-	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz 
+	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
+	if [ `pkg info | grep -q $pkgname-$pkgvers`=0 ]; then
+		echo "Package $pkgname-$pkgvers already installed."
+	else
+		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz 
+	fi
 }
  
 AddPkg snappy
