@@ -58,7 +58,7 @@ Installation
 To install the controller software and the rc script:
 
 1. Log in to the pfSense command line shell as root.
-2. Run this one-line command, which downloads the install script from Github and executes it with sh (points to current 4.6.6 branch):
+2. Run this one-line command, which downloads the install script from Github and executes it with sh:
 
   ```
     fetch -o - https://git.io/j7Jy | sh -s

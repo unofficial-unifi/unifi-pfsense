@@ -7,13 +7,17 @@
 OS_ARCH=`getconf LONG_BIT`
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.3.11/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.4.11/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
 
 #FreeBSD package source:
 FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/"
+
+#FreeBSD package list: 
+FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz" 
+
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -81,44 +85,66 @@ echo "Installing required packages..."
 tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}snappy-1.1.4.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}python2-2_3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}v8-3.18.5_2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mongodb-2.6.12.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}unzip-6.0_7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}pcre-8.39_1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}alsa-lib-1.1.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}freetype2-2.6.3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}fontconfig-2.12.1,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}xproto-7.0.31.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}kbproto-1.0.7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXdmcp-1.1.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libpthread-stubs-0.3_6.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXau-1.0.8_3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libxcb-1.12.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libICE-1.0.9_1,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libSM-1.2.2_3,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}java-zoneinfo-2016.j.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}fixesproto-5.0.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}xextproto-7.3.0.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}inputproto-2.3.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libX11-1.6.4,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXfixes-5.0.3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXext-1.3.3_1,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXi-1.7.9,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXt-1.1.5,1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libfontenc-1.1.3_1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mkfontscale-1.1.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}mkfontdir-1.0.7.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}dejavu-2.37.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}recordproto-1.14.2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXtst-1.2.3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}renderproto-0.11.1.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}libXrender-0.9.10.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}javavmwrapper-2.5_2.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}giflib-5.1.4.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}openjdk8-8.112.16_3.txz
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}snappyjava-1.0.4.1_2.txz
+
+fetch ${FREEBSD_PACKAGE_LIST_URL} 
+tar vfx packagesite.txz 
+
+AddPkg () { 
+	pkgname=$1	
+	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
+	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
+	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
+		echo "Package $pkgname-$pkgvers already installed."
+	else
+		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz 
+	fi
+}
+ 
+AddPkg snappy
+AddPkg python2
+AddPkg v8
+AddPkg mongodb
+AddPkg unzip
+AddPkg pcre
+AddPkg alsa-lib
+AddPkg freetype2
+AddPkg fontconfig
+AddPkg xproto
+AddPkg kbproto
+AddPkg libXdmcp
+AddPkg libpthread-stubs
+AddPkg libXau
+AddPkg libxcb
+AddPkg libICE
+AddPkg libSM
+AddPkg java-zoneinfo
+AddPkg fixesproto
+AddPkg xextproto
+AddPkg inputproto
+AddPkg libX11
+AddPkg libXfixes
+AddPkg libXext
+AddPkg libXi
+AddPkg libXt
+AddPkg libfontenc
+AddPkg mkfontscale
+AddPkg mkfontdir
+AddPkg dejavu
+AddPkg recordproto
+AddPkg libXtst
+AddPkg renderproto
+AddPkg libXrender
+AddPkg javavmwrapper
+AddPkg giflib
+AddPkg openjdk8
+AddPkg snappyjava
+
+# Save current snappyjava version for later:
+snappyjavavers=`grep "\"name\":\"snappyjava\"" packagesite.yaml | pcregrep -o1 '"version":"(.*?)"' | head -1`
+
+# Clean up downloaded package manifest:
+rm packagesite.*
+
 echo " done."
 
 # Switch to a temp directory for the Unifi download:
@@ -140,14 +166,21 @@ echo -n "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 echo " done."
 
-# Replace snappy java library to support AP adoption with latest firmware
+# If partition size is < 4GB, add smallfiles option to mongodb
+echo -n "Checking partition size..."
+if [ `df -k | awk '$NF=="/"{print $2}'` -le 4194302 ]; then
+	echo -e "\nunifi.db.extraargs=--smallfiles\n" >> /usr/local/UniFi/data/system.properties
+fi
+echo " done."
+
+# Replace snappy java library to support AP adoption with latest firmware:
 echo -n "Updating snappy java..."
-fetch https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-1.0.4.1_2.txz
-tar vfx snappyjava-1.0.4.1_2.txz
+fetch https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-${snappyjavavers}.txz
+tar vfx snappyjava-${snappyjavavers}.txz
 mv /usr/local/UniFi/lib/snappy-java-1.0.5.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar.backup
 cp ./usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar
 rm -Rf ./usr
-rm snappyjava-1.0.4.1_2.txz
+rm snappyjava-${snappyjavavers}.txz
 echo " done."
 
 # Fetch the rc script from github:
