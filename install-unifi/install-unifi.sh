@@ -139,9 +139,6 @@ AddPkg giflib
 AddPkg openjdk8
 AddPkg snappyjava
 
-# Save current snappyjava version for later:
-snappyjavavers=`grep "\"name\":\"snappyjava\"" packagesite.yaml | pcregrep -o1 '"version":"(.*?)"' | head -1`
-
 # Clean up downloaded package manifest:
 rm packagesite.*
 
@@ -175,12 +172,8 @@ echo " done."
 
 # Replace snappy java library to support AP adoption with latest firmware:
 echo -n "Updating snappy java..."
-fetch https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/snappyjava-${snappyjavavers}.txz
-tar vfx snappyjava-${snappyjavavers}.txz
 mv /usr/local/UniFi/lib/snappy-java-1.0.5.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar.backup
-cp ./usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar
-rm -Rf ./usr
-rm snappyjava-${snappyjavavers}.txz
+cp /usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-1.0.5.jar
 echo " done."
 
 # Fetch the rc script from github:
