@@ -7,7 +7,7 @@
 OS_ARCH=`getconf LONG_BIT`
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.4.15/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.4.18/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -15,8 +15,8 @@ RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/r
 #FreeBSD package source:
 FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/"
 
-#FreeBSD package list: 
-FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz" 
+#FreeBSD package list:
+FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz"
 
 
 # If pkg-ng is not yet installed, bootstrap it:
@@ -86,20 +86,20 @@ tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
-fetch ${FREEBSD_PACKAGE_LIST_URL} 
-tar vfx packagesite.txz 
+fetch ${FREEBSD_PACKAGE_LIST_URL}
+tar vfx packagesite.txz
 
-AddPkg () { 
-	pkgname=$1	
+AddPkg () {
+	pkgname=$1
 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
 	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
 		echo "Package $pkgname-$pkgvers already installed."
 	else
-		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz 
+		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 	fi
 }
- 
+
 AddPkg snappy
 AddPkg python2
 AddPkg v8
