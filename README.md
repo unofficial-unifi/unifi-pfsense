@@ -1,42 +1,26 @@
 unifi-pfsense
 =============
 
-A pfSense package that provides the UniFi Controller software.
+A script that installs the UniFi Controller software on pfSense and other FreeBSD systems
 
 Purpose
 -------
 
-The objective of this project is to develop and maintain a package that provides [Ubiquiti's](http://www.ubnt.com/) UniFi Controller software for the FreeBSD-based [pfSense](http://www.pfsense.org/) firewall project.
+The objective of this project is to develop and maintain a script that installs [Ubiquiti's](http://www.ubnt.com/) UniFi Controller software on FreeBSD-based systems, particularly the [pfSense](http://www.pfsense.org/) firewall.
 
 Status
 ------
 
-The project now provides two working scripts: an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
+The project provides an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
 
-Milestones
-----------
-
-1. ~~An installation script that is automatic, concise, consistent, and reliable.~~
-2. ~~An rc script for starting and stopping the UniFi Controller.~~
-3. Custom package repository for development.
-4. pfSense user interface elements for managing the UniFi Controller.
-5. A complete pfSense-style package.
-
-Once the package is stable, we have some other big ideas:
-
-- Detailed UniFi reporting in pfSense.
-- Graph data for RRDtool.
-- Dashboard widgets: AP status, connected users
-- Captive portal integration
-- Integrated "wireless" configuration
-- Backup and restore integration
-- Whatever else we can dig out of the API and mongodb
+This project uses the latest branch (5.5) from Ubiquiti rather than the LTS branch (5.4).
 
 Challenges
 ----------
 
-- Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly in a package. To work around this, we can download the UniFi controller software directly from Ubiquiti during the installation process.
-- Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically. It will be up to the package maintainer to keep the package up to date with the latest version of the software available from Ubiquiti.
+Because the UniFi Controller software is proprietary, it cannot be built from source and cannot be included directly in a package. To work around this, we can download the UniFi controller software directly from Ubiquiti during the installation process.
+
+Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically. It will be up to the package maintainers to keep the package up to date with the latest version of the software available from Ubiquiti.
 
 Licensing
 ---------
@@ -47,12 +31,17 @@ The UniFi Controller software is licensed as-is with no warranty, according to t
 
 [Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
 
-Upgrading from 3.2
+Upgrading
 ------------------
 
-Be sure to backup your configuration under 3.2 through the web admin UI before upgrading. The upgrade from 3.2 does not appear to go smoothly simply by archiving and restoring the /var/UniFi directory. You will need to use the web admin UI backup tool to create an .unf file, which you can then restore to 4.7.5 when it loads.
+At the very least, backup your configuration before proceeding.
 
-Installation
+Be sure to track Ubiquiti's release notes for information on the changes and what to expect. Updates, even minor ones, sometimes involve database upgrades that can take some time. Features come and go, and behaviors change. Proceed with caution.
+
+If you are still on 3.2, you should know by now that upgrading will be no small task, as the current software is many generations ahead of you. Proceed with caution.
+
+
+Usage
 ------------
 
 To install the controller software and the rc script:
@@ -65,6 +54,9 @@ To install the controller software and the rc script:
   ```
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
+
+The git.io link above should point to `https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/install-unifi/install-unifi.sh`
+
 
 Starting and Stopping
 ---------------------
@@ -85,12 +77,60 @@ To start and stop the controller, use the `service` command from the command lin
   ```
   The the stop command takes a while to execute, and then the shutdown continues for several minutes in the background. The rc script will wait until the command received and the shutdown is finished. The idea is to hold up system shutdown until the UniFi controller has a chance to exit cleanly.
 
-References
+
+Contributing
+------------
+
+### UniFi controller updates
+
+The main area of concern is keeping up with Ubiquiti's updates. I don't know of a way to automatically grab the URL to the current version; UBNT posts updates only to their blog and their forums, and they don't seem to have a link alias to the current release. That means we have to commit an update directly to the install.sh script with every release.
+
+If you're aware of an update before I am, here's what you do:
+
+1. Create a branch from master, named for the version you are about to test.
+2. Update the URL in install.sh to the latest version.
+3. Test it on your pfSense system.
+4. Optional, but ideal: test it on a fresh pfSense system, as in a VM.
+5. If it checks out, submit a pull request from your branch. This helps bring my attention to the update and lets me know that you have tested the new version.
+
+I will then test on my own systems and merge the PR.
+
+### Other enhancements
+
+Other enhancements are most welcome. Much of the script's most intelligent behavior is the work of contributors, including the package dependency resolution and the java version spoofing. This project would not be alive without these efforts. I am excited by this support, and I can't wait to see what else develops.
+
+Potential areas of improvement include but are not limited to:
+
+- Error handling
+- Automatic latest-version detection
+- More robust backup and restore
+- LTS/Latest branch selection options and defaults. Command line options? Prompts?
+- What else?
+
+### Forking
+
+Fork as you will, especially if you are interested in taking this project in a new direction. Bear in mind as you do so that prevailing philosophies prefer branching and merging for most changes and contributions.
+
+In other words, if you are forking simply to increment the version of the UniFi controller, please instead follow the conventional workflow, create a branch, and submit a PR.
+
+### Issues and pull requests
+
+Of course. That's why it's on github.
+
+Roadmap
+-------
+
+This project may never reach its original goal of becoming a pfSense package. The packaging scheme for pfSense has changed. Doing this as a pfSense package requires doing it as a FreeBSD package first. Doing it as a FreeBSD package means we may as well make it portable to other FreeBSD systems. All of this changes how this would be implemented. Some of the concepts we can borrow, but it's substantially new work. Moreover, because the requirements of the UniFi controller deviate from what's strictly available in the FreeBSD package repos, I'm not even sure it's possible.
+
+As a helper script for installing the UniFi controller, this tool remains effective and robust, which is great. I see no reason not to continue development here.
+
+It is also less pfsense-specific than originally imagined. If you're here to run UniFi on your NAS, welcome!
+
+With all this in mind, the future of this project is clearly as an installation tool, and I envision enhancements to it as such. So let's just make it a smart and capable installer for UniFi Controller on FreeBSD-type systems.
+
+Resources
 ----------
 
-These sources of information immediately come to mind:
-
-- [UniFi product information page](http://www.ubnt.com/unifi#UnifiSoftware)
-- [UniFI download and documentation](http://www.ubnt.com/download#UniFi:AP)
-- [UniFi updates blog](http://community.ubnt.com/t5/UniFi-Updates-Blog/bg-p/Blog_UniFi)
-- [pfSense: Developing Packages](https://doc.pfsense.org/index.php/Developing_Packages)
+- [UniFi product information page](https://www.ubnt.com/software/)
+- [UniFI download and documentation](https://www.ubnt.com/download/unifi)
+- [UniFi updates blog](https://community.ubnt.com/t5/UniFi-Updates-Blog/bg-p/Blog_UniFi)
