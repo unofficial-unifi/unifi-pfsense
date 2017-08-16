@@ -3,20 +3,11 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
-# OS architecture
-OS_ARCH=`getconf LONG_BIT`
-
 # The latest version of UniFi:
 UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.5.19/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
-
-#FreeBSD package source:
-FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/All/"
-
-#FreeBSD package list:
-FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/freebsd:10:x86:${OS_ARCH}/latest/packagesite.txz"
 
 
 # If pkg-ng is not yet installed, bootstrap it:
@@ -31,6 +22,15 @@ if ! /usr/sbin/pkg -N 2> /dev/null; then
   echo "ERROR: pkgng installation failed. Exiting."
   exit 1
 fi
+
+# Determine this installation's Application Binary Interface
+ABI=`/usr/sbin/pkg config abi`
+
+# FreeBSD package source:
+FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/All/"
+
+# FreeBSD package list:
+FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/${ABI}/latest/packagesite.txz"
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
@@ -139,9 +139,6 @@ AddPkg giflib
 AddPkg openjdk8
 AddPkg snappyjava
 
-# Save current snappyjava version for later:
-snappyjavavers=`grep "\"name\":\"snappyjava\"" packagesite.yaml | pcregrep -o1 '"version":"(.*?)"' | head -1`
-
 # Clean up downloaded package manifest:
 rm packagesite.*
 
@@ -175,13 +172,17 @@ echo " done."
 
 # Replace snappy java library to support AP adoption with latest firmware:
 echo -n "Updating snappy java..."
-cd `mktemp -d -t snappyjava`
-fetch ${FREEBSD_PACKAGE_URL}snappyjava-${snappyjavavers}.txz
-tar vfx snappyjava-${snappyjavavers}.txz
-upstreamsnappyjava=`ls -a /usr/local/UniFi/lib/ | pcregrep -o1 '^snappy-java-(.*).jar$'`
-mv /usr/local/UniFi/lib/snappy-java-${upstreamsnappyjava}.jar /usr/local/UniFi/lib/snappy-java-${upstreamsnappyjava}.jar.backup
-cp ./usr/local/share/java/classes/snappy-java.jar /usr/local/UniFi/lib/snappy-java-${upstreamsnappyjava}.jar
-echo " done."
+unifizipcontents=`zipinfo -1 UniFi.unix.zip`
+upstreamsnappyjavapattern='/(snappy-java-[^/]+\.jar)$'
+# Make sure exactly one match is found
+if [ $(echo "${unifizipcontents}" | egrep -c ${upstreamsnappyjavapattern}) -eq 1 ]; then
+  upstreamsnappyjava="/usr/local/UniFi/lib/`echo \"${unifizipcontents}\" | pcregrep -o1 ${upstreamsnappyjavapattern}`"
+  mv "${upstreamsnappyjava}" "${upstreamsnappyjava}.backup"
+  cp /usr/local/share/java/classes/snappy-java.jar "${upstreamsnappyjava}"
+  echo " done."
+else
+  echo "ERROR: Could not locate UniFi's snappy java! AP adoption will most likely fail"
+fi
 
 # Fetch the rc script from github:
 echo -n "Installing rc script..."
