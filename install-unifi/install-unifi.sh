@@ -96,7 +96,7 @@ AddPkg () {
 	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
 		echo "Package $pkgname-$pkgvers already installed."
 	else
-		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 	fi
 }
 
