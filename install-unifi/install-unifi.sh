@@ -97,6 +97,9 @@ AddPkg () {
 		echo "Package $pkgname-$pkgvers already installed."
 	else
 		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+		if [ "$pkgname" == "openjdk8" ]; then
+			env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
+		fi
 	fi
 }
 
