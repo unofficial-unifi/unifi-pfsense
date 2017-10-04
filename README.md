@@ -85,7 +85,7 @@ Contributing
 
 The main area of concern is keeping up with Ubiquiti's updates. I don't know of a way to automatically grab the URL to the current version; UBNT posts updates only to their blog and their forums, and they don't seem to have a link alias to the current release. That means we have to commit an update directly to the install.sh script with every release.
 
-If you're aware of an update before I am, here's what you do:
+If you're aware of an update before I am:
 
 1. Create a branch from master, named for the version you are about to test.
 2. Update the URL in install.sh to the latest version.
@@ -106,12 +106,6 @@ Potential areas of improvement include but are not limited to:
 - More robust backup and restore
 - LTS/Latest branch selection options and defaults. Command line options? Prompts?
 - What else?
-
-### Forking
-
-Fork as you will, especially if you are interested in taking this project in a new direction. Bear in mind as you do so that prevailing philosophies prefer branching and merging for most changes and contributions.
-
-In other words, if you are forking simply to increment the version of the UniFi controller, please instead follow the conventional workflow, create a branch, and submit a PR.
 
 ### Issues and pull requests
 
