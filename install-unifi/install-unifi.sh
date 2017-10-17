@@ -93,11 +93,7 @@ AddPkg () {
 	pkgname=$1
 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
-		echo "Package $pkgname-$pkgvers already installed."
-	else
-		env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
-	fi
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 }
 
 AddPkg snappy
