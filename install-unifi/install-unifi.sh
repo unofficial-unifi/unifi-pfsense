@@ -204,7 +204,7 @@ fi
 # Restore the backup:
 if [ ! -z "${BACKUPFILE}" ] && [ -f ${BACKUPFILE} ]; then
   echo "Restoring UniFi data..."
-  mv /usr/local/UniFi/data /usr/local/UniFi/data-orig
+  mv /usr/local/UniFi/data /usr/local/UniFi/data-`date +%Y%m%d-%H%M`
   /usr/bin/tar -vxzf ${BACKUPFILE} -C /
 fi
 
