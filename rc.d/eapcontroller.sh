@@ -2,23 +2,23 @@
 
 # REQUIRE: FILESYSTEMS
 # REQUIRE: NETWORKING
-# PROVIDE: unifi
+# PROVIDE: EAPController
 
 . /etc/rc.subr
 
-name="unifi"
-rcvar="unifi_enable"
-start_cmd="unifi_start"
-stop_cmd="unifi_stop"
+name="eapcontroller"
+rcvar="eapcontroller_enable"
+start_cmd="eapcontroller_start"
+stop_cmd="eapcontroller_stop"
 
 pidfile="/var/run/${name}.pid"
 
 load_rc_config ${name}
 
-unifi_start()
+eapcontroller_start()
 {
   if checkyesno ${rcvar}; then
-    echo "Starting UniFi controller. "
+    echo "Starting EAP Controller. "
 
     # Open up netcat to listen on port 8080, and then close the connection immediately, then quit.
     # This works around the long startup delay. Thanks to gcohen55.
