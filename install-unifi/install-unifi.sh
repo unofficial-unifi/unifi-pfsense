@@ -97,16 +97,25 @@ AddPkg () {
 }
 
 AddPkg snappy
+AddPkg cyrus-sasl
+AddPkg xorgproto
+AddPkg libXau
+AddPkg libICE
+AddPkg libX11
+AddPkg libfontenc
+AddPkg mkfontscale
+AddPkg mkfontdir
+AddPkg dejavu
 AddPkg python2
 AddPkg v8
-AddPkg mongodb
+AddPkg icu
+AddPkg boost-libs
+AddPkg mongodb34
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
 AddPkg freetype2
 AddPkg fontconfig
-AddPkg xproto
-AddPkg kbproto
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
@@ -114,9 +123,6 @@ AddPkg libxcb
 AddPkg libICE
 AddPkg libSM
 AddPkg java-zoneinfo
-AddPkg fixesproto
-AddPkg xextproto
-AddPkg inputproto
 AddPkg libX11
 AddPkg libXfixes
 AddPkg libXext
@@ -126,9 +132,7 @@ AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg mkfontdir
 AddPkg dejavu
-AddPkg recordproto
 AddPkg libXtst
-AddPkg renderproto
 AddPkg libXrender
 AddPkg javavmwrapper
 AddPkg giflib
