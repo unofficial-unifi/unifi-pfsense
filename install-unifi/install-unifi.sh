@@ -110,7 +110,7 @@ AddPkg python2
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
-AddPkg mongodb34
+AddPkg mongodb
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
