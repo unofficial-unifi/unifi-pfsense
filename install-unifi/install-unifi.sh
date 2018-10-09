@@ -110,7 +110,7 @@ AddPkg python2
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
-AddPkg mongodb
+AddPkg mongodb34
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
@@ -212,4 +212,3 @@ fi
 echo -n "Starting the unifi service..."
 /usr/sbin/service unifi.sh start
 echo " done."
-
