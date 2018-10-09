@@ -97,7 +97,7 @@ AddPkg () {
 }
 
 AddPkg openjdk8
-AddPkg mongodb34
+AddPkg mongodb
 AddPkg renderproto
 AddPkg recordproto
 AddPkg fixesproto
