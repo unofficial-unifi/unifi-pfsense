@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ubnt.com/unifi/5.8.30/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.9.29/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -96,6 +96,15 @@ AddPkg () {
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 }
 
+AddPkg openjdk8
+AddPkg mongodb
+AddPkg renderproto
+AddPkg recordproto
+AddPkg fixesproto
+AddPkg xextproto
+AddPkg inputproto
+AddPkg xproto
+AddPkg kbproto
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg xorgproto
@@ -110,7 +119,6 @@ AddPkg python2
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
-AddPkg mongodb34
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
@@ -136,7 +144,6 @@ AddPkg libXtst
 AddPkg libXrender
 AddPkg javavmwrapper
 AddPkg giflib
-AddPkg openjdk8
 AddPkg snappyjava
 
 # Clean up downloaded package manifest:
