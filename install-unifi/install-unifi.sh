@@ -96,8 +96,7 @@ AddPkg () {
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 }
 
-AddPkg openjdk8
-AddPkg mongodb
+AddPkg mongodb34
 AddPkg renderproto
 AddPkg recordproto
 AddPkg fixesproto
@@ -144,6 +143,7 @@ AddPkg libXtst
 AddPkg libXrender
 AddPkg javavmwrapper
 AddPkg giflib
+AddPkg openjdk8
 AddPkg snappyjava
 
 # Clean up downloaded package manifest:
