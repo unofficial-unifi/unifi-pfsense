@@ -101,15 +101,12 @@ AddPkg boost-libs
 AddPkg cyrus-sasl
 AddPkg dejavu
 AddPkg dejavu
-AddPkg fixesproto
 AddPkg fontconfig
 AddPkg freetype2
 AddPkg giflib
 AddPkg icu
-AddPkg inputproto
 AddPkg java-zoneinfo
 AddPkg javavmwrapper
-AddPkg kbproto
 AddPkg libICE
 AddPkg libICE
 AddPkg libSM
@@ -136,15 +133,11 @@ AddPkg mongodb34
 AddPkg openjdk8
 AddPkg pcre
 AddPkg python2
-AddPkg recordproto
-AddPkg renderproto
 AddPkg snappy
 AddPkg snappyjava
 AddPkg unzip
 AddPkg v8
-AddPkg xextproto
 AddPkg xorgproto
-AddPkg xproto
 
 # Clean up downloaded package manifest:
 rm packagesite.*
