@@ -77,6 +77,46 @@ To start and stop the controller, use the `service` command from the command lin
   ```
   The the stop command takes a while to execute, and then the shutdown continues for several minutes in the background. The rc script will wait until the command received and the shutdown is finished. The idea is to hold up system shutdown until the UniFi controller has a chance to exit cleanly.
 
+pfSense Package Conflicts
+---------------------
+
+The version of icu installed for boost, a requirement of mongodb, is newer than what is used by many packages, pfSense or otherwise. Installing packages from the pfSense web UI should be considered **dangerous** and avoided after installing the controller software as pfSense can and will uninstall mongodb while the controller is running.
+
+To check package compatability, first go to the command line and locate your package with `pkg search PKG_NAME`. pfSense packages are of the form `pfSense-pkg-PKG_NAME`, such as `pfSense-pkg-pfBlockerNG`. Check the install with `pkg install --dry-run PKG_NAME`. If you recieve a message saying that icu is to be downgraded and boost and mongodb will be removed, you need to do a manual forced install:
+
+```
+$ pkg install --dry-run pfSense-pkg-syslog-ng
+Updating pfSense-core repository catalogue...
+pfSense-core repository is up to date.
+Updating pfSense repository catalogue...
+pfSense repository is up to date.
+All repositories are up to date.
+The following 9 package(s) will be affected (of 0 checked):
+
+Installed packages to be REMOVED:
+	boost-libs-1.68.0_3
+	mongodb34-3.4.16_1
+
+New packages to be INSTALLED:
+	pfSense-pkg-syslog-ng: 1.15_2 [pfSense]
+	syslog-ng: 3.14.1_1 [pfSense]
+	e2fsprogs-libuuid: 1.44.4 [pfSense]
+	libbson: 1.8.1 [pfSense]
+	logrotate: 3.13.0_1 [pfSense]
+	popt: 1.16_2 [pfSense]
+
+Installed packages to be DOWNGRADED:
+	icu: 63.1,1 -> 62.1_1,1 [pfSense]
+
+Number of packages to be removed: 2
+Number of packages to be installed: 6
+Number of packages to be downgraded: 1
+
+The operation will free 285 MiB.
+901 KiB to be downloaded.
+```
+
+To force an install, fetch each package listed under `New packages to be INSTALLED` with `pkg fetch PKG_NAME`. Once you have fetched all the packages, go to `/var/cache/pkg` and force install each package with `pkg add -f PKG_NAME.txz`. This is obviously not ideal, and packages **may not work correctly** if they rely on something speciffic to icu 62.
 
 Contributing
 ------------
