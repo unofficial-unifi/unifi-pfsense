@@ -139,6 +139,7 @@ AddPkg mkfontdir
 AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
+AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg giflib
 AddPkg openjdk8
