@@ -95,7 +95,9 @@ AddPkg () {
 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 }
-
+## resolves error of not installing openjdk in version 2.4.4_p2
+AddPkg libinotify
+####
 AddPkg mongodb34
 AddPkg renderproto
 AddPkg recordproto
