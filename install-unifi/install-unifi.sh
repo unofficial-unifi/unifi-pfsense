@@ -90,34 +90,32 @@ fetch ${FREEBSD_PACKAGE_LIST_URL}
 tar vfx packagesite.txz
 
 AddPkg () {
-	pkgname=$1
-	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
-	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+ 	pkgname=$1
+ 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
+ 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
+	
+	# compare version for update/install
+ 	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
+			echo "Package $pkgname-$pkgvers already installed."
+		else
+			env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+			
+			# if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
+			if [ "$pkgname" == "openjdk8" ]; then 
+				env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
+			fi
+		fi
 }
-
-AddPkg mongodb34
-AddPkg renderproto
-AddPkg recordproto
-AddPkg fixesproto
-AddPkg xextproto
-AddPkg inputproto
-AddPkg xproto
-AddPkg kbproto
+	
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg xorgproto
-AddPkg libXau
-AddPkg libICE
-AddPkg libX11
-AddPkg libfontenc
-AddPkg mkfontscale
 AddPkg mkfontdir
-AddPkg dejavu
 AddPkg python2
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
+AddPkg mongodb34
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
@@ -141,6 +139,7 @@ AddPkg mkfontdir
 AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
+AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg giflib
 AddPkg openjdk8
