@@ -110,7 +110,6 @@ AddPkg () {
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg xorgproto
-AddPkg mkfontdir
 AddPkg python2
 AddPkg v8
 AddPkg icu
@@ -135,7 +134,6 @@ AddPkg libXi
 AddPkg libXt
 AddPkg libfontenc
 AddPkg mkfontscale
-AddPkg mkfontdir
 AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
