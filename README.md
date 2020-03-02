@@ -78,12 +78,30 @@ To start and stop the controller, use the `service` command from the command lin
   The the stop command takes a while to execute, and then the shutdown continues for several minutes in the background. The rc script will wait until the command received and the shutdown is finished. The idea is to hold up system shutdown until the UniFi controller has a chance to exit cleanly.
 
 
+After Installing
+----------------
+
+After using this script to install the UniFi Controller software, check the UniFi controller documentation for next steps, which would include how to access the controller (https://firewall.example.com:8443/), how to perform initial configuration, how to restore from a backup, and all the other things you would need to know and need to do to manage a UniFi system that are not specific to running UniFi Controller on FreeBSD.
+
+
+Troubleshooting
+---------------
+
+Step one is to determine whether the issue you’ve encountered is with this script or with the UniFi controller software. 
+
+Issues with the script  might include problems downloading packages, installing packages, interactions with pfSense such as dependency packages being deleted after updates, or incorrect dependencies being downloaded. Feel free to open an issue for anything like this.
+
+Issues with the UniFi Controller software or its various dependencies might include not starting up, not listening on port 8443, exiting with a port conflict, crashing after startup, database errors, memory issues, file permissions, dependency conflicts, or the weather. You should troubleshoot these issues as you would on any other installation of UniFi Controller. For some, the first stop is UniFi technical support; for others, ready answers to most questions about setting up UniFi controller are found most quickly on the UniFi forums.
+
+It may turn out that some issue with the UniFi Controller software is caused by something this script is doing, like if MongoDB won’t start because you’re running it on a PDP-8 with 12-bit words, and this script is installing the build of MongoDB for PDP-11 systems with 16-bit words. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
+
+
 Contributing
 ------------
 
 ### UniFi controller updates
 
-The main area of concern is keeping up with Ubiquiti's updates. I don't know of a way to automatically grab the URL to the current version; UBNT posts updates only to their blog and their forums, and they don't seem to have a link alias to the current release. That means we have to commit an update directly to the install.sh script with every release.
+The main area of concern is keeping up with Ubiquiti's updates. I don't know of a way to automatically grab the URL to the current version, though there has been work done on this. For now we have to commit an update directly to the install.sh script with every UniFi release.
 
 If you're aware of an update before I am:
 
