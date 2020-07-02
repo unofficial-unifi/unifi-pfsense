@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.12.72/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.13.29/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -110,11 +110,11 @@ AddPkg () {
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg xorgproto
-AddPkg python2
+AddPkg python37
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
-AddPkg mongodb34
+AddPkg mongodb36
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
