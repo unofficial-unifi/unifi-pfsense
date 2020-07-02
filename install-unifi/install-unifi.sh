@@ -82,11 +82,11 @@ echo " done."
 
 #remove mongodb34 - discontinued
 echo "Removing packages discontinued..."
-if [pkg info | grep mongodb -eq 1]; then
+if [ `pkg info | grep mongodb` -eq 1 ]; then
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb
 fi
 
-if [pkg info | grep mongodb34 -eq 1]; then
+if [ `pkg info | grep mongodb34` -eq 1 ]; then
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
 fi
 
