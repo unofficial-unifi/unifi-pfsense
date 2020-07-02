@@ -79,6 +79,20 @@ echo -n "Mounting new filesystems..."
 /sbin/mount -a
 echo " done."
 
+
+#remove mongodb34 - discontinued
+echo "Removing packages discontinued..."
+if [pkg info | grep mongodb -eq 1]; then
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb
+fi
+
+if [pkg info | grep mongodb34 -eq 1]; then
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
+fi
+
+	
+
+
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo "Installing required packages..."
@@ -88,12 +102,6 @@ tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 
 fetch ${FREEBSD_PACKAGE_LIST_URL}
 tar vfx packagesite.txz
-
-#remove mongodb34 - discontinued
-if [pkg info | grep mogodb34 -eq 1]; then
-	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
-fi
-	
 
 AddPkg () {
  	pkgname=$1
