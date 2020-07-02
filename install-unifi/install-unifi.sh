@@ -89,6 +89,12 @@ tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 fetch ${FREEBSD_PACKAGE_LIST_URL}
 tar vfx packagesite.txz
 
+#remove mongodb34 - discontinued
+if [pkg info | grep mogodb34 -eq 1]; then
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
+fi
+	
+
 AddPkg () {
  	pkgname=$1
  	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
