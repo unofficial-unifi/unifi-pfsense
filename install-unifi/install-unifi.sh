@@ -89,6 +89,7 @@ fi
 if [ `pkg info | grep -c mongodb34-` -eq 1 ]; then
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
 fi
+echo " done."
 
 	
 
