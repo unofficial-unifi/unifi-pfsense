@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.13.29/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.13.32/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -89,6 +89,7 @@ fi
 if [ `pkg info | grep -c mongodb34-` -eq 1 ]; then
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
 fi
+echo " done."
 
 	
 
