@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.14.22/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.14.23/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -91,7 +91,7 @@ if [ `pkg info | grep -c mongodb34-` -eq 1 ]; then
 fi
 echo " done."
 
-	
+
 
 
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
