@@ -96,6 +96,15 @@ Issues with the UniFi Controller software or its various dependencies might incl
 It may turn out that some issue with the UniFi Controller software is caused by something this script is doing, like if MongoDB won’t start because you’re running it on a PDP-8 with 12-bit words, and this script is installing the build of MongoDB for PDP-11 systems with 16-bit words. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
 
 
+
+To uninstall UniFi controller:
+----------------
+
+rm -rf /usr/local/UniFi
+rm /usr/local/etc/rc.d/unifi.sh
+
+
+
 Contributing
 ------------
 
