@@ -99,10 +99,12 @@ It may turn out that some issue with the UniFi Controller software is caused by 
 
 To uninstall UniFi controller:
 ----------------
-
+To completely remove Unifi controller from your system, please note that this will also remove all your setting. we recommend that you make a backup first.
+You must also STOP the Unifi Controller before running the following commands.
+```
 rm -rf /usr/local/UniFi
 rm /usr/local/etc/rc.d/unifi.sh
-
+```
 
 
 Contributing
