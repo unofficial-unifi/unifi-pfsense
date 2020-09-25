@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.14.23/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.0.23/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -122,7 +122,14 @@ AddPkg () {
 		fi
 }
 
+AddPkg dejavu
+AddPkg openjdk8
+AddPkg snappyjava
 AddPkg snappy
+AddPkg python27
+AddPkg png
+AddPkg fontconfig
+AddPkg freetype2
 AddPkg cyrus-sasl
 AddPkg xorgproto
 AddPkg python37
@@ -133,8 +140,6 @@ AddPkg mongodb36
 AddPkg unzip
 AddPkg pcre
 AddPkg alsa-lib
-AddPkg freetype2
-AddPkg fontconfig
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
@@ -149,14 +154,11 @@ AddPkg libXi
 AddPkg libXt
 AddPkg libfontenc
 AddPkg mkfontscale
-AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg giflib
-AddPkg openjdk8
-AddPkg snappyjava
 
 # Clean up downloaded package manifest:
 rm packagesite.*
