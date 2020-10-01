@@ -131,6 +131,7 @@ AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
 AddPkg giflib
+AddPkg xorgproto
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
@@ -151,7 +152,6 @@ AddPkg openjdk8
 AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
-AddPkg xorgproto
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
