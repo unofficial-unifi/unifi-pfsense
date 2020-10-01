@@ -127,6 +127,7 @@ AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
 AddPkg python27
+AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
 AddPkg openjdk8
@@ -152,7 +153,6 @@ AddPkg libXfixes
 AddPkg libXext
 AddPkg libXi
 AddPkg libXt
-AddPkg libfontenc
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
