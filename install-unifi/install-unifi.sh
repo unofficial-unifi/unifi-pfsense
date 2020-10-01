@@ -126,7 +126,8 @@ AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
-AddPkg python37
+AddPkg python27
+AddPkg mkfontscale
 AddPkg dejavu
 AddPkg openjdk8
 AddPkg snappyjava
@@ -152,7 +153,6 @@ AddPkg libXext
 AddPkg libXi
 AddPkg libXt
 AddPkg libfontenc
-AddPkg mkfontscale
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
