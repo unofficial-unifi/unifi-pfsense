@@ -122,24 +122,23 @@ AddPkg () {
 		fi
 }
 
+AddPkg freetype2
+AddPkg fontconfig
+AddPkg alsa-lib
+AddPkg python37
+AddPkg png
 AddPkg dejavu
 AddPkg openjdk8
 AddPkg snappyjava
 AddPkg snappy
-AddPkg python27
-AddPkg png
-AddPkg fontconfig
-AddPkg freetype2
 AddPkg cyrus-sasl
 AddPkg xorgproto
-AddPkg python37
 AddPkg v8
 AddPkg icu
 AddPkg boost-libs
 AddPkg mongodb36
 AddPkg unzip
 AddPkg pcre
-AddPkg alsa-lib
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
