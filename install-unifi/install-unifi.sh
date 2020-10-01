@@ -131,6 +131,22 @@ AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
 AddPkg giflib
+AddPkg libXdmcp
+AddPkg libpthread-stubs
+AddPkg libXau
+AddPkg libxcb
+AddPkg libICE
+AddPkg libSM
+AddPkg libX11
+AddPkg libXfixes
+AddPkg libXext
+AddPkg libXi
+AddPkg libXt
+AddPkg libXtst
+AddPkg libXrender
+AddPkg libinotify
+AddPkg javavmwrapper
+AddPkg java-zoneinfo
 AddPkg openjdk8
 AddPkg snappyjava
 AddPkg snappy
@@ -142,22 +158,6 @@ AddPkg boost-libs
 AddPkg mongodb36
 AddPkg unzip
 AddPkg pcre
-AddPkg libXdmcp
-AddPkg libpthread-stubs
-AddPkg libXau
-AddPkg libxcb
-AddPkg libICE
-AddPkg libSM
-AddPkg java-zoneinfo
-AddPkg libX11
-AddPkg libXfixes
-AddPkg libXext
-AddPkg libXi
-AddPkg libXt
-AddPkg libXtst
-AddPkg libXrender
-AddPkg libinotify
-AddPkg javavmwrapper
 
 # Clean up downloaded package manifest:
 rm packagesite.*
