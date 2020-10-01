@@ -3,8 +3,31 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# Either use provided version or get latest from API
+UNIFI_VERSION=$1
+if [ -z "$UNIFI_VERSION" ]; then
+  echo "Version not supplied, fetching latest"
+  UNIFI_VERSION=$(
+    curl -sL 'https://www.ui.com/download/?platform=unifi' -H 'X-Requested-With: XMLHttpRequest' |
+    jq -r '.downloads | map(select(.slug | test("unifi-network-controller-.*"))) | sort_by(.date_published) | .[-1].version' 2>/dev/null
+  )
+
+  if ! $(echo "$UNIFI_VERSION" | egrep -q '^[0-9]+\.[0-9]+\.[0-9]+$'); then
+    echo "Version \"$UNIFI_VERSION\" doesn't make sense" 
+    echo "If that's correct, run this again with it as the first argument"
+    exit 1
+  fi  
+
+  printf "Is version $UNIFI_VERSION okay? [y/N] " && read RESPONSE  
+  case $RESPONSE in
+    [Yy] ) ;;                    
+    * ) exit 1;;                   
+  esac
+fi
+echo "Installing UniFi Controller $UNIFI_VERSION"
+
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.14.23/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/$UNIFI_VERSION/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -122,41 +145,42 @@ AddPkg () {
 		fi
 }
 
-AddPkg snappy
-AddPkg cyrus-sasl
-AddPkg xorgproto
-AddPkg python37
-AddPkg v8
-AddPkg icu
-AddPkg boost-libs
-AddPkg mongodb36
-AddPkg unzip
-AddPkg pcre
-AddPkg alsa-lib
+AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
+AddPkg alsa-lib
+AddPkg python27
+AddPkg libfontenc
+AddPkg mkfontscale
+AddPkg dejavu
+AddPkg giflib
+AddPkg xorgproto
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
 AddPkg libxcb
 AddPkg libICE
 AddPkg libSM
-AddPkg java-zoneinfo
 AddPkg libX11
 AddPkg libXfixes
 AddPkg libXext
 AddPkg libXi
 AddPkg libXt
-AddPkg libfontenc
-AddPkg mkfontscale
-AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
-AddPkg giflib
+AddPkg java-zoneinfo
 AddPkg openjdk8
 AddPkg snappyjava
+AddPkg snappy
+AddPkg cyrus-sasl
+AddPkg v8
+AddPkg icu
+AddPkg boost-libs
+AddPkg mongodb36
+AddPkg unzip
+AddPkg pcre
 
 # Clean up downloaded package manifest:
 rm packagesite.*
