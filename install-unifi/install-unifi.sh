@@ -122,11 +122,11 @@ AddPkg () {
 		fi
 }
 
+AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
 AddPkg python37
-AddPkg png
 AddPkg dejavu
 AddPkg openjdk8
 AddPkg snappyjava
