@@ -130,6 +130,7 @@ AddPkg python27
 AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
+AddPkg giflib
 AddPkg openjdk8
 AddPkg snappyjava
 AddPkg snappy
@@ -157,7 +158,6 @@ AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
-AddPkg giflib
 
 # Clean up downloaded package manifest:
 rm packagesite.*
