@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.14.23/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.0.28-39f3b98a31/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -122,41 +122,42 @@ AddPkg () {
 		fi
 }
 
-AddPkg snappy
-AddPkg cyrus-sasl
-AddPkg xorgproto
-AddPkg python37
-AddPkg v8
-AddPkg icu
-AddPkg boost-libs
-AddPkg mongodb36
-AddPkg unzip
-AddPkg pcre
-AddPkg alsa-lib
+AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
+AddPkg alsa-lib
+AddPkg python27
+AddPkg libfontenc
+AddPkg mkfontscale
+AddPkg dejavu
+AddPkg giflib
+AddPkg xorgproto
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
 AddPkg libxcb
 AddPkg libICE
 AddPkg libSM
-AddPkg java-zoneinfo
 AddPkg libX11
 AddPkg libXfixes
 AddPkg libXext
 AddPkg libXi
 AddPkg libXt
-AddPkg libfontenc
-AddPkg mkfontscale
-AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
-AddPkg giflib
+AddPkg java-zoneinfo
 AddPkg openjdk8
 AddPkg snappyjava
+AddPkg snappy
+AddPkg cyrus-sasl
+AddPkg v8
+AddPkg icu
+AddPkg boost-libs
+AddPkg mongodb36
+AddPkg unzip
+AddPkg pcre
 
 # Clean up downloaded package manifest:
 rm packagesite.*
