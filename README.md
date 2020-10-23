@@ -97,7 +97,7 @@ It may turn out that some issue with the UniFi Controller software is caused by 
 
 
 
-To uninstall UniFi controller (completely remove):
+To uninstall UniFi controller (completely remove, Please backup your config first):
 ----------------
   ```
     rm -rf /usr/local/UniFi
@@ -105,11 +105,12 @@ To uninstall UniFi controller (completely remove):
   ```
 
 
-To uninstall Java (for users having problems with java):
+
+To uninstall Java (for OPNSense firewall/Sensei plugin user with broken java link):
 ----------------
   ```
-    pkg remove javavmwrapper
-    pkg remove java-zoneinfo
+    pkg remove -y javavmwrapper
+    pkg remove -y java-zoneinfo
   ```
 
 
