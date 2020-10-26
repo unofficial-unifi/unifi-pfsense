@@ -93,9 +93,6 @@ Issues with the script  might include problems downloading packages, installing 
 
 Issues with the UniFi Controller software or its various dependencies might include not starting up, not listening on port 8443, exiting with a port conflict, crashing after startup, database errors, memory issues, file permissions, dependency conflicts, or the weather. You should troubleshoot these issues as you would on any other installation of UniFi Controller. For some, the first stop is UniFi technical support; for others, ready answers to most questions about setting up UniFi controller are found most quickly on the UniFi forums.
 
-It may turn out that some issue with the UniFi Controller software is caused by something this script is doing, like if MongoDB won’t start because you’re running it on a PDP-8 with 12-bit words, and this script is installing the build of MongoDB for PDP-11 systems with 16-bit words. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
-
-
 
 To uninstall UniFi controller:
 ----------------
