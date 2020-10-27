@@ -125,7 +125,7 @@ The main area of concern is keeping up with Ubiquiti's updates. I don't know of 
 
 If you're aware of an update before I am:
 
-1. Create a branch from master, named for the version you are about to test.
+1. Create a branch from beta, named for the version you are about to test.
 2. Update the URL in install.sh to the latest version.
 3. Test it on your pfSense system.
 4. Optional, but ideal: test it on a fresh pfSense system, as in a VM.
