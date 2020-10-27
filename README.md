@@ -68,7 +68,8 @@ UniFi Controller 6.0.28 Stable
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
 
-The git.io link above should point to `https://raw.githubusercontent.com/gnkidwell/unifi-pfsense/beta/install-unifi/install-unifi.sh`
+The git.io link above should point to the respective directories under this fork for whatever version you are installing:
+`https://raw.githubusercontent.com/gnkidwell/unifi-pfsense/beta/`
 
 
 Starting and Stopping
