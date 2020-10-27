@@ -63,7 +63,7 @@ UniFi Controller 5.14.23 Stable
 ```
 UniFi Controller 6.0.28 Stable
 ```
-  fetch -o - https://git.io/JTPRb | sh -s
+   fetch -o - https://git.io/JTPRb | sh -s
 ```
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
