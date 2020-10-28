@@ -1,4 +1,4 @@
-#!/bin/sh.
+#!/bin/sh
 
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
