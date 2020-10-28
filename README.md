@@ -108,11 +108,24 @@ Issues with the script  might include problems downloading packages, installing 
 Issues with the UniFi Controller software or its various dependencies might include not starting up, not listening on port 8443, exiting with a port conflict, crashing after startup, database errors, memory issues, file permissions, dependency conflicts, or the weather. You should troubleshoot these issues as you would on any other installation of UniFi Controller. For some, the first stop is UniFi technical support; for others, ready answers to most questions about setting up UniFi controller are found most quickly on the UniFi forums.
 
 
-To uninstall UniFi controller:
-----------------
 
-rm -rf /usr/local/UniFi
-rm /usr/local/etc/rc.d/unifi.sh
+
+To uninstall UniFi controller (completely remove, Please backup your config first):
+----------------
+  ```
+    rm -rf /usr/local/UniFi
+    rm /usr/local/etc/rc.d/unifi.sh
+  ```
+
+
+
+To uninstall Java (for OPNSense firewall/Sensei plugin user with broken java link):
+----------------
+  ```
+    pkg remove -y javavmwrapper
+    pkg remove -y java-zoneinfo
+  ```
+
 
 
 
