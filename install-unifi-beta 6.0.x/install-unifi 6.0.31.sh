@@ -96,7 +96,6 @@ echo " done."
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo "Installing required packages..."
-tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
@@ -126,7 +125,7 @@ pkg unlock -yq png
 pkg unlock -yq freetype2
 pkg unlock -yq fontconfig
 pkg unlock -yq alsa-lib
-pkg unlock -yq python27
+pkg unlock -yq python37
 pkg unlock -yq libfontenc
 pkg unlock -yq mkfontscale
 pkg unlock -yq dejavu
@@ -152,7 +151,6 @@ pkg unlock -yq openjdk8
 pkg unlock -yq snappyjava
 pkg unlock -yq snappy
 pkg unlock -yq cyrus-sasl
-pkg unlock -yq v8
 pkg unlock -yq icu
 pkg unlock -yq boost-libs
 pkg unlock -yq mongodb36
@@ -164,7 +162,7 @@ AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
-AddPkg python27
+AddPkg python37
 AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
@@ -190,7 +188,6 @@ AddPkg openjdk8
 AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
-AddPkg v8
 AddPkg icu
 AddPkg boost-libs
 AddPkg mongodb36
@@ -202,7 +199,7 @@ pkg lock -yq png
 pkg lock -yq freetype2
 pkg lock -yq fontconfig
 pkg lock -yq alsa-lib
-pkg lock -yq python27
+pkg lock -yq python37
 pkg lock -yq libfontenc
 pkg lock -yq mkfontscale
 pkg lock -yq dejavu
@@ -228,7 +225,6 @@ pkg lock -yq openjdk8
 pkg lock -yq snappyjava
 pkg lock -yq snappy
 pkg lock -yq cyrus-sasl
-pkg lock -yq v8
 pkg lock -yq icu
 pkg lock -yq boost-libs
 pkg lock -yq mongodb36
