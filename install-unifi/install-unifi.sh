@@ -96,7 +96,6 @@ echo " done."
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo "Installing required packages..."
-tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
@@ -121,11 +120,49 @@ AddPkg () {
 		fi
 }
 
+#Unlocks all Packages for install-unifi.sh (if an install was done previously)
+pkg unlock -yq png
+pkg unlock -yq freetype2
+pkg unlock -yq fontconfig
+pkg unlock -yq alsa-lib
+pkg unlock -yq python37
+pkg unlock -yq libfontenc
+pkg unlock -yq mkfontscale
+pkg unlock -yq dejavu
+pkg unlock -yq giflib
+pkg unlock -yq xorgproto
+pkg unlock -yq libXdmcp
+pkg unlock -yq libpthread-stubs
+pkg unlock -yq libXau
+pkg unlock -yq libxcb
+pkg unlock -yq libICE
+pkg unlock -yq libSM
+pkg unlock -yq libX11
+pkg unlock -yq libXfixes
+pkg unlock -yq libXext
+pkg unlock -yq libXi
+pkg unlock -yq libXt
+pkg unlock -yq libXtst
+pkg unlock -yq libXrender
+pkg unlock -yq libinotify
+pkg unlock -yq javavmwrapper
+pkg unlock -yq java-zoneinfo
+pkg unlock -yq openjdk8
+pkg unlock -yq snappyjava
+pkg unlock -yq snappy
+pkg unlock -yq cyrus-sasl
+pkg unlock -yq icu
+pkg unlock -yq boost-libs
+pkg unlock -yq mongodb36
+pkg unlock -yq unzip
+pkg unlock -yq pcre
+
+#Add the following Packages for installation or reinstallation (if something was removed)
 AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
-AddPkg python27
+AddPkg python37
 AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
@@ -151,12 +188,48 @@ AddPkg openjdk8
 AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
-AddPkg v8
 AddPkg icu
 AddPkg boost-libs
 AddPkg mongodb36
 AddPkg unzip
 AddPkg pcre
+
+#Locks all Packages for install-unifi.sh following their install or reinstall (this prevents pkg upgrade to break the UniFi controller, or OPNSense Updates to do the same)
+pkg lock -yq png
+pkg lock -yq freetype2
+pkg lock -yq fontconfig
+pkg lock -yq alsa-lib
+pkg lock -yq python37
+pkg lock -yq libfontenc
+pkg lock -yq mkfontscale
+pkg lock -yq dejavu
+pkg lock -yq giflib
+pkg lock -yq xorgproto
+pkg lock -yq libXdmcp
+pkg lock -yq libpthread-stubs
+pkg lock -yq libXau
+pkg lock -yq libxcb
+pkg lock -yq libICE
+pkg lock -yq libSM
+pkg lock -yq libX11
+pkg lock -yq libXfixes
+pkg lock -yq libXext
+pkg lock -yq libXi
+pkg lock -yq libXt
+pkg lock -yq libXtst
+pkg lock -yq libXrender
+pkg lock -yq libinotify
+pkg lock -yq javavmwrapper
+pkg lock -yq java-zoneinfo
+pkg lock -yq openjdk8
+pkg lock -yq snappyjava
+pkg lock -yq snappy
+pkg lock -yq cyrus-sasl
+pkg lock -yq icu
+pkg lock -yq boost-libs
+pkg lock -yq mongodb36
+pkg lock -yq unzip
+pkg lock -yq pcre
 
 # Clean up downloaded package manifest:
 rm packagesite.*
