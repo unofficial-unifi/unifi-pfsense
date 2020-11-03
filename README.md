@@ -53,7 +53,7 @@ UniFi Controller 6.0.33 Beta
 ```
    fetch -o - https://git.io/JTPBp | sh -s
 ```
-UniFi Controller 6.1.21 Beta
+UniFi Controller 6.1.23 Beta
 ```
    fetch -o - https://git.io/JTPRz | sh -s
 ```
