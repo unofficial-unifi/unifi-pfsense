@@ -51,11 +51,11 @@ To install the controller software and the rc script:
 
 UniFi Controller 6.0.34 Beta
 ```
-   fetch -o - https://git.io/JTPBp | sh -s
+   fetch -o - https://git.io/JTjGv | sh -s
 ```
 UniFi Controller 6.1.25 Beta
 ```
-   fetch -o - https://git.io/JTPRz | sh -s
+   fetch -o - https://git.io/JTjGq | sh -s
 ```
 UniFi Controller 5.14.23 Stable
 ```
