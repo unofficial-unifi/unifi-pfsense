@@ -53,9 +53,9 @@ UniFi Controller 6.0.36 Beta
 ```
    fetch -o - https://git.io/JkOZS | sh -s
 ```
-UniFi Controller 6.1.25 Beta
+UniFi Controller 6.1.26 Beta
 ```
-   fetch -o - https://git.io/JTjGq | sh -s
+   fetch -o - https://git.io/Jk8AT | sh -s
 ```
 UniFi Controller 5.14.23 Stable
 ```
