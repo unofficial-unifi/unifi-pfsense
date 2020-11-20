@@ -57,13 +57,13 @@ UniFi Controller 6.1.26 Beta
 ```
    fetch -o - https://git.io/Jk8AT | sh -s
 ```
-UniFi Controller 5.14.23 Stable
+UniFi Controller 5.14.23 Official Release
 ```
    fetch -o - https://git.io/JTPRo | sh -s
 ```
-UniFi Controller 6.0.28 Stable
+UniFi Controller 6.0.36 Official Release
 ```
-   fetch -o - https://git.io/JTPRb | sh -s
+   fetch -o - https://git.io/JkzTe | sh -s
 ```
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
