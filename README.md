@@ -49,9 +49,9 @@ To install the controller software and the rc script:
 1. Log in to the pfSense command line shell as root.
 2. Run this one-line command, which downloads the install script from Github and executes it with sh (choose which version of the controller you want, and run that fetch link):
 
-UniFi Controller 6.0.41 Beta
+UniFi Controller 6.0.42 Beta
 ```
-   fetch -o - https://git.io/JIIRj | sh -s
+   fetch -o - https://git.io/JIE8U | sh -s
 ```
 UniFi Controller 6.1.26 Beta
 ```
