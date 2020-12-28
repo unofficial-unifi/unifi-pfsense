@@ -4,11 +4,10 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="http://dl.ubnt.com/unifi/5.14.23/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.0.43-a8e04a273f/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
-
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -54,6 +53,9 @@ if [ $(ps ax | grep -c "/usr/local/UniFi/data/[d]b") -ne 0 ]; then
   echo " done."
 fi
 
+# Repairs Mongodb database in case of corruption
+mongod --dbpath /usr/local/UniFi/data/db --repair
+
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
   echo "Backing up UniFi data..."
@@ -97,7 +99,6 @@ echo " done."
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo "Installing required packages..."
-tar xv -C / -f /usr/local/share/pfSense/base.txz ./usr/bin/install
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
@@ -106,57 +107,60 @@ tar vfx packagesite.txz
 
 AddPkg () {
  	pkgname=$1
+        pkg unlock -yq $pkgname
  	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
  	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
 
 	# compare version for update/install
  	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
-			echo "Package $pkgname-$pkgvers already installed."
-		else
-			env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+	     echo "Package $pkgname-$pkgvers already installed."
+	else
+	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
 
-			# if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
-			if [ "$pkgname" == "openjdk8" ]; then
-				env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
-			fi
-		fi
+	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
+	     if [ "$pkgname" == "openjdk8" ]; then
+	          env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
+             fi
+        fi
+        pkg lock -yq $pkgname
 }
 
-AddPkg snappy
-AddPkg cyrus-sasl
-AddPkg xorgproto
-AddPkg python37
-AddPkg v8
-AddPkg icu
-AddPkg boost-libs
-AddPkg mongodb36
-AddPkg unzip
-AddPkg pcre
-AddPkg alsa-lib
+#Add the following Packages for installation or reinstallation (if something was removed)
+AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
+AddPkg alsa-lib
+AddPkg python37
+AddPkg libfontenc
+AddPkg mkfontscale
+AddPkg dejavu
+AddPkg giflib
+AddPkg xorgproto
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
 AddPkg libxcb
 AddPkg libICE
 AddPkg libSM
-AddPkg java-zoneinfo
 AddPkg libX11
 AddPkg libXfixes
 AddPkg libXext
 AddPkg libXi
 AddPkg libXt
-AddPkg libfontenc
-AddPkg mkfontscale
-AddPkg dejavu
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
-AddPkg giflib
+AddPkg java-zoneinfo
 AddPkg openjdk8
 AddPkg snappyjava
+AddPkg snappy
+AddPkg cyrus-sasl
+AddPkg icu
+AddPkg boost-libs
+AddPkg mongodb36
+AddPkg unzip
+AddPkg pcre
 
 # Clean up downloaded package manifest:
 rm packagesite.*
