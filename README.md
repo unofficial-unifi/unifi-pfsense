@@ -3,17 +3,28 @@ unifi-pfsense
 
 A script that installs the UniFi Controller software on pfSense and other FreeBSD systems
 
+
 Purpose
 -------
 
 The objective of this project is to develop and maintain a script that installs [Ubiquiti's](http://www.ubnt.com/) UniFi Controller software on FreeBSD-based systems, particularly the [pfSense](http://www.pfsense.org/) firewall.
+
 
 Status
 ------
 
 The project provides an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
 
-This project uses the latest branch from Ubiquiti rather than the LTS branch.
+This project uses the latest branch from Ubiquiti rather than the LTS branch. From December 2020, this means the 6.x branch.
+
+
+Compatibility
+-------------
+
+The script is known to work on FreeBSD-based systems, including pfSense, OPNsense, FreeNAS, and more. Be sure to check the forks for versions specific to other systems.
+
+This script *will destroy* a legacy BIOS system booting from an MBR formatted ZFS root volume; see #168. Again, using this script on a system with an MBR formatted ZFS root volume will break your system. It appears that one of the dependency packages may cause this. We have not isolated which. To avoid this problem, use UEFI mode if available, use GPT partitions, or use a filesystem other than ZFS. If you have already set up your system to use legacy BIOS, MBR partitons, and ZFS, then *do not run this script.*
+
 
 Challenges
 ----------
@@ -22,23 +33,25 @@ Because the UniFi Controller software is proprietary, it cannot be built from so
 
 Because Ubiquiti does not provide a standard way to fetch the software (not even a "latest" symlink), we cannot identify the appropriate version to download from Ubiquiti programmatically. It will be up to the package maintainers to keep the package up to date with the latest version of the software available from Ubiquiti.
 
-Licensing
----------
 
-This project itself is licensed according to the two-clause BSD license.
+Upgrading UniFi controller
+--------------------------
 
-The UniFi Controller software is licensed as-is with no warranty, according to the README included with the software.
+At the very least, back up your configuration before proceeding.
 
-[Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
+Be sure to track [Ubiquiti's release notes](https://community.ui.com/releases) for information on the changes and what to expect. Updates, even minor ones, sometimes change things. Some involve database upgrades that can take some time. Features come and go, and behaviors change. Proceed with caution.
 
-Upgrading
-------------------
+You should know that upgrading from earlier versions may be no small task. Ubiquiti sometimes makes substantial changes, especially between major versions. Carefully consult [Ubiquiti's release notes](https://community.ui.com/releases) for upgrading considerations. Proceed with caution.
 
-At the very least, backup your configuration before proceeding.
 
-Be sure to track Ubiquiti's release notes for information on the changes and what to expect. Updates, even minor ones, sometimes involve database upgrades that can take some time. Features come and go, and behaviors change. Proceed with caution.
+Upgrading pfSense
+-----------------
 
-If you are still on 3.2, you should know by now that upgrading will be no small task, as the current software is many generations ahead of you. Proceed with caution.
+The pfSense updater will remove everything you install that didn't come through pfSense, including the packages installed by this script.
+
+Before updating pfSense, save a backup of your UniFi controller configuration to another system.
+
+After updating pfSense, you will need to run this script again to restore the dependencies and the software.
 
 
 Usage
@@ -81,7 +94,7 @@ To start and stop the controller, use the `service` command from the command lin
 After Installing
 ----------------
 
-After using this script to install the UniFi Controller software, check the UniFi controller documentation for next steps, which would include how to access the controller (https://firewall.example.com:8443/), how to perform initial configuration, how to restore from a backup, and all the other things you would need to know and need to do to manage a UniFi system that are not specific to running UniFi Controller on FreeBSD.
+After using this script to install the UniFi Controller software, check the [UniFi controller documentation](https://help.ui.com/hc/en-us/articles/360012282453-UniFi-Set-up-a-UniFi-Network-Controller#h_52fdb29d-86cc-4f07-8f09-bd6b7268b525) for next steps. 
 
 
 Troubleshooting
@@ -95,23 +108,42 @@ Issues with the UniFi Controller software or its various dependencies might incl
 
 It may turn out that some issue with the UniFi Controller software is caused by something this script is doing, like if MongoDB won’t start because you’re running it on a PDP-8 with 12-bit words, and this script is installing the build of MongoDB for PDP-11 systems with 16-bit words. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
 
+### Java compatibility on OPNsense
 
-The following are troubleshooting commands that needs to be RUN on concole for troubleshooting/maintenace
+This script may create a conflict that breaks Java on an OPNSense system with the Sensei plugin installed. To resolve this conflict, remove two packages:
 
-Uninstall UniFi controller
-   To completely remove Unifi controller run this commands, Please backup your config files first as this will completely removed all Unifi controller files and settings.
-  ```
-    rm -rf /usr/local/UniFi
-    rm /usr/local/etc/rc.d/unifi.sh
-  ```
-
-Uninstall Java
-   For OPNSense firewall with Sensei plugin and broken java. this will fix/remove the issue with the installer. This has been resolved already in previous script build but has been added for future reference.
   ```
     pkg remove -y javavmwrapper
     pkg remove -y java-zoneinfo
   ```
 
+
+Uninstalling
+------------
+
+This script does three things:
+1. Download and install required dependency packages
+2. Download and unpack the UniFi controller software binaries from Ubiquiti
+3. Install an rc script so that the UniFi controller can be started and stopped with `service`
+
+Uninstalling therefore means one of two things:
+- Removing the UniFi controller software at `/usr/local/UniFi` and removing the rc script at `/usr/local/etc/rc.d/unifi.sh`
+- Removing the dependency packages that were installed
+
+### Uninstall the UniFi controller software
+
+1. Back up your configuration, if you intend to keep it.
+2. Remove the UniFi controller software binaries and rc script:
+    ```
+      rm -rf /usr/local/UniFi
+      rm /usr/local/etc/rc.d/unifi.sh
+    ```
+
+### Removing the dependency packages
+
+To remove the packages that were installed by this script, you can go through the list of packages that were installed and remove them (look for the AddPkg lines).
+
+Note that, on pfSense, all of them will probably be removed anyway the next time you update pfSense.
 
 
 Contributing
@@ -157,6 +189,16 @@ As a helper script for installing the UniFi controller, this tool remains effect
 It is also less pfsense-specific than originally imagined. If you're here to run UniFi on your NAS, welcome!
 
 With all this in mind, the future of this project is clearly as an installation tool, and I envision enhancements to it as such. So let's just make it a smart and capable installer for UniFi Controller on FreeBSD-type systems.
+
+Licensing
+---------
+
+This project itself is licensed according to the two-clause BSD license.
+
+The UniFi Controller software is licensed as-is with no warranty, according to the README included with the software.
+
+[Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
+
 
 Resources
 ----------
