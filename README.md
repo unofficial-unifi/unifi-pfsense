@@ -96,18 +96,17 @@ Issues with the UniFi Controller software or its various dependencies might incl
 It may turn out that some issue with the UniFi Controller software is caused by something this script is doing, like if MongoDB won’t start because you’re running it on a PDP-8 with 12-bit words, and this script is installing the build of MongoDB for PDP-11 systems with 16-bit words. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
 
 
+The following are troubleshooting commands that needs to be RUN on concole for troubleshooting/maintenace
 
-To uninstall UniFi controller (completely remove, Please backup your config first):
-----------------
+Uninstall UniFi controller
+   To completely remove Unifi controller run this commands, Please backup your config files first as this will completely removed all Unifi controller files and settings.
   ```
     rm -rf /usr/local/UniFi
     rm /usr/local/etc/rc.d/unifi.sh
   ```
 
-
-
-To uninstall Java (for OPNSense firewall/Sensei plugin user with broken java link):
-----------------
+Uninstall Java
+   For OPNSense firewall with Sensei plugin and broken java. this will fix/remove the issue with the installer. This has been resolved already in previous script build but has been added for future reference.
   ```
     pkg remove -y javavmwrapper
     pkg remove -y java-zoneinfo
