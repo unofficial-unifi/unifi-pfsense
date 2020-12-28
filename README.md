@@ -97,11 +97,21 @@ It may turn out that some issue with the UniFi Controller software is caused by 
 
 
 
-To uninstall UniFi controller:
+To uninstall UniFi controller (completely remove, Please backup your config first):
 ----------------
+  ```
+    rm -rf /usr/local/UniFi
+    rm /usr/local/etc/rc.d/unifi.sh
+  ```
 
-rm -rf /usr/local/UniFi
-rm /usr/local/etc/rc.d/unifi.sh
+
+
+To uninstall Java (for OPNSense firewall/Sensei plugin user with broken java link):
+----------------
+  ```
+    pkg remove -y javavmwrapper
+    pkg remove -y java-zoneinfo
+  ```
 
 
 
