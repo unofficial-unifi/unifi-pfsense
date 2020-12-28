@@ -141,7 +141,7 @@ Uninstalling therefore means one of two things:
 
 ### Removing the dependency packages
 
-To remove the packages that were installed by this script, you can go through the list of packages that were installed and remove them (look for the AddPkg lines).
+To remove the packages that were installed by this script, you can go through the list of packages that were installed and remove them (look for the AddPkg lines). You will have to determine for yourself whether anything else on your system might still be using the packages installed by this script. Removing a package that is in use by something else will break that other thing.
 
 Note that, on pfSense, all of them will probably be removed anyway the next time you update pfSense.
 
