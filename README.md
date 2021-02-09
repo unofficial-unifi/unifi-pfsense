@@ -10,10 +10,12 @@ This README echos the same issues, so is practically verbatim.
 
 Update
 -------
-2021-02-09 - Revisited this as I wanted to use it again.
-    Fix: Works(ish)
-    Fix: Updated to support the Omada branding.
-    Fix: Install script will attempt to find the latest installation URL.
+2021-02-09 
+  
+    Revisited this as I wanted to use it again.
+      Fix: Works(ish)
+      Fix: Updated to support the Omada branding.
+      Fix: Install script will attempt to find the latest installation URL.
     
     Known Issues:
      - This is still very VERY much incomplete.
@@ -59,12 +61,10 @@ To install the controller software and the rc script:
 2. Run this one-line command, which downloads the install script from Github and executes it with sh:
 
   ```
-    fetch -o - https://... | sh -s
+    fetch -o - https://raw.githubusercontent.com/tinwhisker/tplink-eapcontroller-pfsense/master/install-eapcontroller/install-eapcontroller.sh | sh -s
   ```
 
 The install script will install dependencies, download the EAP controller software, make some adjustments, and start the EAP controller.
-
-The git.io link above should point to `https://raw.githubusercontent.com/...`
 
 
 Starting and Stopping
