@@ -1,11 +1,25 @@
 eapcontroller-pfsense
 =============
 
-*** Incomplete at this time ***
+*** Still Incomplete at this time ***
 
 A script that installs the EAP Controller software on pfSense and other FreeBSD systems
 Heavily based on UniFi-pfSense by Gozoinks (https://github.com/gozoinks/unifi-pfsense) and notes from @ArthurGay (https://medium.com/@arthurgay/eap-controller-software-on-a-raspberry-pi-9e93ecd1672e)
 This README echos the same issues, so is practically verbatim.
+
+
+Update
+-------
+2021-02-09 - Revisited this as I wanted to use it again.
+    Fix: Works(ish)
+    Fix: Updated to support the Omada branding.
+    Fix: Install script will attempt to find the latest installation URL.
+    
+    Known Issues:
+     - This is still very VERY much incomplete.
+     - Starting the service can take a few minutes.
+     - Upgrading is not tested.
+     - Script is messy!
 
 Purpose
 -------
