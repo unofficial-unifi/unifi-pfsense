@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.0.45/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.1.71/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
@@ -119,6 +119,7 @@ AddPkg () {
 
 	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
 	     if [ "$pkgname" == "openjdk8" ]; then
+	          pkg unlock -yq snappyjava
 	          env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
              fi
         fi
