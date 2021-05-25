@@ -3,8 +3,11 @@
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
+# Instead every time updating the URL, just update latest controller version
+LATEST_CTL_VER=6.2.25
+
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.0.45/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/${LATEST_CTL_VER}/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
