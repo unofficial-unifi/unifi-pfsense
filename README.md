@@ -123,6 +123,36 @@ pkg remove -y javavmwrapper
 pkg remove -y java-zoneinfo
   ```
 
+### Compatibility upgrade to MONGODB 4.2 (for those using MongoDB 4.2 or having DB compatibility problems)
+
+The follow is the work around for upgrading MongoDB 3.6 to MonggoDB 4.2. This is to resolve conflict and crashes in Unifi Controller relating to MongoDB:
+contributed by user ccottam and johnkeates.
+
+1. Install the May 30 version first (https://github.com/unofficial-unifi/unifi-pfsense/blob/e51c3a6f9b55080d1e9b6100a8d42daa30641ba9/install-unifi/install-unifi.sh) to get a working mongo 3.6 database and make sure everything still works.
+(if you are unable to install this, try going directly to step 2)
+
+2. Install a mongo 4.0 version: (Jun 1) https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/4167b09685d1bdf881d9076ba01d8ff2ab173a81/install-unifi/install-unifi.sh
+
+3. Set the feature version to 4.0:
+having installed mongodb 4.0, run the following command in shell to set compatibility feature
+
+  ```
+> mongo localhost:27117
+  ```
+  ```
+> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
+{ "featureCompatibilityVersion" : { "version" : "3.6" }, "ok" : 1 }
+>  db.adminCommand( { setFeatureCompatibilityVersion: "4.0" } )
+{ "ok" : 1 }
+> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
+{ "featureCompatibilityVersion" : { "version" : "4.0" }, "ok" : 1 }
+  ```
+4. Install the newer Jun 1 version next (upgrades to 4.2) (https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/c04a44f34f7c9c7c4e358d43dd7d74b1e676ef6a/install-unifi/install-unifi.sh)
+At this point you have a mongodb that was upgraded from 3.6 to 4.0, then the database files were upgraded to 4.0 compatible, then upgrading to mongodb 4.2. allows you to see that it indeed works with the new format (repairs might be needed but the script does that for you)
+So now you can install newer versions because the database file formats are now up-to-date.
+
+5. Install the latest version of Unifi Controller
+
 
 Uninstalling
 ------------
