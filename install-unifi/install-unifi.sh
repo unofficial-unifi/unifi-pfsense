@@ -10,6 +10,8 @@ UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.5.53/UniFi.unix.zip"
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
 
+CURRENT_MONGODB_VERSION=mongodb42
+
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
   echo "FreeBSD pkgng not installed. Installing..."
@@ -83,24 +85,14 @@ echo -n "Mounting new filesystems..."
 echo " done."
 
 
-#remove mongodb34 - discontinued
-echo "Removing packages discontinued..."
-if [ `pkg info | grep -c mongodb-` -eq 1 ]; then
-        pkg unlock -yq mongodb
-	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb
-fi
-
-if [ `pkg info | grep -c mongodb34-` -eq 1 ]; then
-        pkg unlock -yq mongodb34 
-	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
-fi
-
-if [ `pkg info | grep -c mongodb36-` -eq 1 ]; then
-        pkg unlock -yq mongodb36
-	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb36
-fi
+echo "Removing discontinued packages..."
+old_mongos=`pkg info | grep mongodb | grep -v ${CURRENT_MONGODB_VERSION}`
+for old_mongo in "${old_mongos}"; do
+  package=`echo "$old_mongo" | cut -d' ' -f1`
+  pkg unlock -yq ${package}
+  env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${package}
+done
 echo " done."
-
 
 
 
@@ -168,7 +160,7 @@ AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
 AddPkg boost-libs
-AddPkg mongodb40
+AddPkg ${CURRENT_MONGODB_VERSION}
 AddPkg unzip
 AddPkg pcre
 
