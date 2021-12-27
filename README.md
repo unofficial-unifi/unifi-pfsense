@@ -137,15 +137,15 @@ contributed by user ccottam and johnkeates.
 having installed mongodb 4.0, run the following command in shell to set compatibility feature
 
   ```
-> mongo localhost:27117
+cmd> mongo localhost:27117
   ```
   ```
-> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
-{ "featureCompatibilityVersion" : { "version" : "3.6" }, "ok" : 1 }
->  db.adminCommand( { setFeatureCompatibilityVersion: "4.0" } )
-{ "ok" : 1 }
-> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
-{ "featureCompatibilityVersion" : { "version" : "4.0" }, "ok" : 1 }
+cmd> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
+response> { "featureCompatibilityVersion" : { "version" : "3.6" }, "ok" : 1 }
+cmd>  db.adminCommand( { setFeatureCompatibilityVersion: "4.0" } )
+response> { "ok" : 1 }
+cmd> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
+response> { "featureCompatibilityVersion" : { "version" : "4.0" }, "ok" : 1 }
   ```
 4. Install the newer Jun 1 version next (upgrades to 4.2) (https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/c04a44f34f7c9c7c4e358d43dd7d74b1e676ef6a/install-unifi/install-unifi.sh)
 At this point you have a mongodb that was upgraded from 3.6 to 4.0, the database itself has been upgraded to be 4.0 compatible, finally mongodb 4.2 has been installed. Any database repairs will be handled automatically by the installation script.
