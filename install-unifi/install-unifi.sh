@@ -30,12 +30,12 @@ ABI=`/usr/sbin/pkg config abi`
 
 # FreeBSD package source:
 #FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/All/"
-FREEBSD_PACKAGE_URL="http://pkg0.kul.freebsd.org/${ABI}/latest/All/"
-#https://mirrors.xtom.nl/freebsd-pkg/FreeBSD%3A12%3Aamd64/quarterly/All/ ?
+#FREEBSD_PACKAGE_URL="http://pkg0.kul.freebsd.org/${ABI}/latest/All/"
+FREEBSD_PACKAGE_URL="https://mirrors.xtom.nl/freebsd-pkg/${ABI}/latest/All/"
 
 # FreeBSD package list:
 #FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/${ABI}/latest/packagesite.txz"
-FREEBSD_PACKAGE_LIST_URL="http://pkg0.kul.freebsd.org/${ABI}/latest/packagesite.txz"
+FREEBSD_PACKAGE_LIST_URL="https://mirrors.xtom.nl/freebsd-pkg/${ABI}/latest/packagesite.txz"
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
