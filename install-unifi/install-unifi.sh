@@ -29,13 +29,11 @@ fi
 ABI=`/usr/sbin/pkg config abi`
 
 # FreeBSD package source:
-#FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/All/"
-#FREEBSD_PACKAGE_URL="http://pkg0.kul.freebsd.org/${ABI}/latest/All/"
-FREEBSD_PACKAGE_URL="https://mirrors.xtom.nl/freebsd-pkg/${ABI}/latest/All/"
+FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/All/"
 
 # FreeBSD package list:
-#FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/${ABI}/latest/packagesite.txz"
-FREEBSD_PACKAGE_LIST_URL="https://mirrors.xtom.nl/freebsd-pkg/${ABI}/latest/packagesite.txz"
+FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/${ABI}/latest/packagesite.txz"
+
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
@@ -135,7 +133,7 @@ AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
 AddPkg mpdecimal
-AddPkg python37
+#AddPkg python37
 AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
@@ -157,8 +155,8 @@ AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
-AddPkg openjdk8
-AddPkg snappyjava
+#AddPkg openjdk8
+#AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
