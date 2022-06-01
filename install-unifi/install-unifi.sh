@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.1.66-c70daa41cf/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.85-92448da610/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
@@ -116,7 +116,7 @@ AddPkg () {
  	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
 	     echo "Package $pkgname-$pkgvers already installed."
 	else
-	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.pkg
 
 	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
 	     if [ "$pkgname" == "openjdk8" ]; then
@@ -133,7 +133,7 @@ AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
 AddPkg mpdecimal
-#AddPkg python37
+AddPkg python37
 AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
@@ -155,8 +155,8 @@ AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
-#AddPkg openjdk8
-#AddPkg snappyjava
+AddPkg openjdk8
+AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
