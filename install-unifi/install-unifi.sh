@@ -115,7 +115,7 @@ AddPkg () {
  	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
 	     echo "Package $pkgname-$pkgvers already installed."
 	else
-	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.pkg
 
 	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
 	     if [ "$pkgname" == "openjdk8" ]; then
