@@ -8,7 +8,7 @@ UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.5.55/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
-RC_SCRIPT_URL="https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/rc.d/unifi.sh"
+RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
 
 CURRENT_MONGODB_VERSION=mongodb42
 

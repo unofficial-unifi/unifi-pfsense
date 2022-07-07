@@ -23,7 +23,7 @@ Compatibility
 
 The script is known to work on FreeBSD-based systems, including pfSense, OPNsense, FreeNAS, and more. Be sure to check the forks for versions specific to other systems.
 
-This script *will destroy* a legacy BIOS system booting from an MBR formatted ZFS root volume; see [#168](https://github.com/gozoinks/unifi-pfsense/issues/168). Again, using this script on a system with an MBR formatted ZFS root volume will break your system. It appears that one of the dependency packages may cause this. We have not isolated which. To avoid this problem, use UEFI mode if available, use GPT partitions, or use a filesystem other than ZFS. If you have already set up your system to use legacy BIOS, MBR partitons, and ZFS, then *do not run this script.*
+This script *will destroy* a legacy BIOS system booting from an MBR formatted ZFS root volume; see [#168](https://github.com/unofficial-unifi/unifi-pfsense/issues/168). Again, using this script on a system with an MBR formatted ZFS root volume will break your system. It appears that one of the dependency packages may cause this. We have not isolated which. To avoid this problem, use UEFI mode if available, use GPT partitions, or use a filesystem other than ZFS. If you have already set up your system to use legacy BIOS, MBR partitons, and ZFS, then *do not run this script.*
 
 
 Challenges
@@ -68,7 +68,7 @@ To install the controller software and the rc script:
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
 
-The git.io link above should point to `https://raw.githubusercontent.com/gozoinks/unifi-pfsense/master/install-unifi/install-unifi.sh`
+The git.io link above should point to `https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/install-unifi/install-unifi.sh`
 
 
 Starting and Stopping
@@ -232,7 +232,7 @@ This project itself is licensed according to the two-clause BSD license.
 
 The UniFi Controller software is licensed as-is with no warranty, according to the README included with the software.
 
-[Ubiquiti has indicated via email](https://github.com/gozoinks/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
+[Ubiquiti has indicated via email](https://github.com/unofficial-unifi/unifi-pfsense/wiki/Tacit-Approval) that acceptance of the EULA on the web site is not required before downloading the software.
 
 
 Resources
