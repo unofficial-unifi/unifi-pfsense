@@ -29,10 +29,10 @@ fi
 ABI=`/usr/sbin/pkg config abi`
 
 # FreeBSD package source:
-FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/All/"
+FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/"
 
 # FreeBSD package list:
-FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/${ABI}/latest/packagesite.txz"
+FREEBSD_PACKAGE_LIST_URL="${FREEBSD_PACKAGE_URL}packagesite.pkg"
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
@@ -103,19 +103,20 @@ echo "Installing required packages..."
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
 fetch ${FREEBSD_PACKAGE_LIST_URL}
-tar vfx packagesite.txz
+tar vfx packagesite.pkg
 
 AddPkg () {
  	pkgname=$1
         pkg unlock -yq $pkgname
  	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
  	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
+	pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
 
 	# compare version for update/install
  	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
 	     echo "Package $pkgname-$pkgvers already installed."
 	else
-	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f "$pkgurl"
 
 	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
 	     if [ "$pkgname" == "openjdk8" ]; then
