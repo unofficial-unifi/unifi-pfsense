@@ -123,6 +123,35 @@ pkg remove -y javavmwrapper
 pkg remove -y java-zoneinfo
   ```
 
+### Compatibility upgrade to MONGODB 4.2 (for those using MongoDB 4.2 or having DB compatibility problems)
+
+The following is a workaround for upgrading MongoDB 3.6 to MonggoDB 4.2 to resolve conflict and crashes in Unifi Controller related to MongoDB versions.
+contributed by user ccottam and johnkeates.
+
+1. Install the May 30 version first (https://github.com/unofficial-unifi/unifi-pfsense/blob/e51c3a6f9b55080d1e9b6100a8d42daa30641ba9/install-unifi/install-unifi.sh) to get a working mongo 3.6 database and make sure everything still works.
+(if you are unable to install this, try going directly to step 2)
+
+2. Install a mongo 4.0 version: (Jun 1) https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/4167b09685d1bdf881d9076ba01d8ff2ab173a81/install-unifi/install-unifi.sh
+
+3. Set the feature version to 4.0:
+having installed mongodb 4.0, run the following command in shell to set compatibility feature
+
+  ```
+cmd> mongo localhost:27117
+  ```
+  ```
+cmd> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
+response> { "featureCompatibilityVersion" : { "version" : "3.6" }, "ok" : 1 }
+cmd>  db.adminCommand( { setFeatureCompatibilityVersion: "4.0" } )
+response> { "ok" : 1 }
+cmd> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
+response> { "featureCompatibilityVersion" : { "version" : "4.0" }, "ok" : 1 }
+  ```
+4. Install the newer Jun 1 version next (upgrades to 4.2) (https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/c04a44f34f7c9c7c4e358d43dd7d74b1e676ef6a/install-unifi/install-unifi.sh)
+At this point you have a mongodb that was upgraded from 3.6 to 4.0, the database itself has been upgraded to be 4.0 compatible, finally mongodb 4.2 has been installed. Any database repairs will be handled automatically by the installation script.
+
+5. Install the latest version of Unifi Controller
+
 
 Uninstalling
 ------------
