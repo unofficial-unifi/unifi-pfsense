@@ -1,11 +1,21 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # install-unifi.sh
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
-# The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/6.5.55/UniFi.unix.zip"
+# Current "known good" / "stable"
+UNIFI_VERSION="6.5.55"
 
+if [ "${1}" = "--latest" ]; then
+  LATEST_UBQ_FW_URL="$(curl -s 'https://fw-update.ubnt.com/api/firmware?filter=eq~~product~~unifi-controller&filter=eq~~platform~~unix&filter=eq~~channel~~release&sort=-version&limit=1')"
+  UNIFI_VERSION=$(echo "${LATEST_UBQ_FW_URL}" | jq '._embedded.firmware[0]._links.data.href' | jq -r 'match("(([\\d]+[.]){2}[\\d]+)").string')
+  unset LATEST_UBQ_FW_URL
+elif [ "${1}" = "--version" ] && [[ -n $(printf '"%s"' "${2}"  | jq -r 'match("(([\\d]+[.]){2}[\\d]+)").string') ]]; then
+  UNIFI_VERSION="${2}"
+fi
+
+# The latest version of UniFi:
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/${UNIFI_VERSION}/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
