@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # Instead every time updating the URL, just update latest controller version
-LATEST_CTL_VER=6.2.25
+LATEST_CTL_VER=7.2.92
 
 # The latest version of UniFi:
 UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/${LATEST_CTL_VER}/UniFi.unix.zip"
@@ -28,8 +28,9 @@ fi
 # Determine this installation's Application Binary Interface
 ABI=`/usr/sbin/pkg config abi`
 
+# latest/All changed to latest/ since the path is being aquired in AddPkg
 # FreeBSD package source:
-FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/All/"
+FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/"
 
 # FreeBSD package list:
 FREEBSD_PACKAGE_LIST_URL="https://pkg.freebsd.org/${ABI}/latest/packagesite.txz"
@@ -58,12 +59,20 @@ fi
 
 # Repairs Mongodb database in case of corruption
 mongod --dbpath /usr/local/UniFi/data/db --repair
+# TODO: Need backup with controller version - just in case of rollbacks
 
+# TODO: Add Current running controller version to file name
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
-  echo "Backing up UniFi data..."
+  echo -n "Backing up UniFi data..."
   BACKUPFILE=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
-  /usr/bin/tar -vczf ${BACKUPFILE} /usr/local/UniFi/data
+  /usr/bin/tar -czf ${BACKUPFILE} /usr/local/UniFi/data
+  PROCSUCC=$(echo $?)
+  if [ $(echo $?) -ne 0 ]; then
+    echo "Failed to backup" && exit 21
+  else
+    echo " done."
+  fi
 fi
 
 # Add the fstab entries apparently required for OpenJDKse:
@@ -86,46 +95,101 @@ echo " done."
 
 
 #remove mongodb34 - discontinued
-echo "Removing packages discontinued..."
 if [ `pkg info | grep -c mongodb-` -eq 1 ]; then
+  echo "Removing packages discontinued..."
+  pkg unlock -yq mongodb
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb
+  echo " done."
 fi
 
 if [ `pkg info | grep -c mongodb34-` -eq 1 ]; then
+  echo "Removing packages discontinued..."
+  pkg unlock -yq mongodb34 
 	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb34
+  echo " done."
 fi
-echo " done."
 
+# while at it, clean up MongoDB 3.6 and 4.0 versions. If
+# you are already on 4.2 and using it for UniFi ONLY
+if [ `pkg info | grep -c mongodb36-` -eq 1 ]; then
+  echo "Removing packages discontinued..."
+  pkg unlock -yq mongodb36
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb36
+  echo " done."
+fi
 
+if [ `pkg info | grep -c mongodb40-` -eq 1 ]; then
+  echo "Removing packages discontinued..."
+  pkg unlock -yq mongodb40
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb40
+  echo " done."
+fi
 
+# New changes added to install-unifi
+# Until higher versions of mongo are supported by UniFi
+# this is for users who must migrate data from Mongo 4.2
+if [ `pkg info | grep -wc mongodb42-tools` -eq 1 ]; then
+        pkg unlock -yq mongodb42-tools
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb42-tools
+fi
 
-# Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
+if [ `pkg info | grep -wc mongodb42-4.2` -eq 1 ]; then
+        pkg unlock -yq mongodb42
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete mongodb42
+fi
+
+cleanup () {
+    rm -rf "$TMPDIR"
+}
+
+TMPDIR=`mktemp -d  -t unifi`
+
+# Try to keep /tmp hygine as well by switching one
+# level further in for the Upgrades the Unifi download:
+cd $TMPDIR
+
+trap cleanup EXIT
+
+# Install latest mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
-echo "Installing required packages..."
-#uncomment below for pfSense 2.2.x:
-#env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
+echo "Installing required updated packages..."
+# uncomment below for pfSense 2.2.x:
+# env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
-fetch ${FREEBSD_PACKAGE_LIST_URL}
-tar vfx packagesite.txz
+# From unifi 7.x / FreeBSD 12.3 onwards also need to check and install jq as pre-requisite to this script
+if [ `pkg info | grep -ce '^jq-'` -eq 0 ]; then
+	echo "Installing Lightweight and flexible command-line JSON processor"
+	env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install jq
+if
+
+
+echo "Get the latest package list..."
+fetch -o ${TMPDIR}/packagesite.txz -q ${FREEBSD_PACKAGE_LIST_URL}
+tar -fx packagesite.txz
 
 AddPkg () {
- 	pkgname=$1
-        pkg unlock -yq $pkgname
- 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
- 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
+  PACKAGE_NAME=${1}
+  pkg unlock -yq ${PACKAGE_NAME}
+  PACKAGE_INFO=`grep \"name\":\"$PACKAGE_NAME\" packagesite.yaml | jq -r '[.name,.version]| join ( "-" )'`
+  PACKAGE_PATH=`grep \"name\":\"$PACKAGE_NAME\" packagesite.yaml | jq .path | sed -e s/\"//g`
 
-	# compare version for update/install
- 	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
-	     echo "Package $pkgname-$pkgvers already installed."
-	else
-	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${pkgname}-${pkgvers}.txz
+  # compare version for update/install
+  if [ `pkg info | grep -c ${PACKAGE_INFO}` -eq 1 ]; then
+     echo "Package $PACKAGE_NAME already at latest version."
+  else
+     CURRENT_PACKAGE=`pkg info | grep $PACKAGE_NAME | awk '{print $1}'`
+     echo "Currently installed $CURRENT_PACKAGE"
+     echo "Upgrading to ... ${PACKAGE_INFO}"
+     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f ${FREEBSD_PACKAGE_URL}${PACKAGE_PATH}
 
-	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
-	     if [ "$pkgname" == "openjdk8" ]; then
-	          env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
-             fi
-        fi
-        pkg lock -yq $pkgname
+     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
+     # TODO: link replacement below fails (but has no effect since its the same version for quite some time now
+     if [ "$PACKAGE_NAME" == "openjdk8" ]; then
+        pkg unlock -yq snappyjava
+        env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
+      fi
+  fi
+  pkg lock -yq ${PACKAGE_NAME}
 }
 
 #Add the following Packages for installation or reinstallation (if something was removed)
@@ -133,7 +197,8 @@ AddPkg png
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
-AddPkg python37
+AddPkg mpdecimal
+AddPkg python38
 AddPkg libfontenc
 AddPkg mkfontscale
 AddPkg dejavu
@@ -153,35 +218,33 @@ AddPkg libXt
 AddPkg libXtst
 AddPkg libXrender
 AddPkg libinotify
+AddPkg boost-libs
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
 AddPkg openjdk8
-AddPkg snappyjava
-AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
-AddPkg boost-libs
-AddPkg mongodb36
+AddPkg snappyjava
+AddPkg snappy
+AddPkg mongodb42
+AddPkg mongodb42-tools
 AddPkg unzip
 AddPkg pcre
 
 # Clean up downloaded package manifest:
 rm packagesite.*
 
-echo " done."
-
-# Switch to a temp directory for the Unifi download:
-cd `mktemp -d -t unifi`
+echo "Pakage Refresh - done."
 
 # Download the controller from Ubiquiti (assuming acceptance of the EULA):
-echo -n "Downloading the UniFi controller software..."
-/usr/bin/fetch ${UNIFI_SOFTWARE_URL}
+echo -n "Downloading latest UniFi controller software..."
+/usr/bin/fetch -o $TMPDIR/UniFi.unix.zip ${UNIFI_SOFTWARE_URL}
 echo " done."
 
 # Unpack the archive into the /usr/local directory:
 # (the -o option overwrites the existing files without complaining)
 echo -n "Installing UniFi controller in /usr/local..."
-/usr/local/bin/unzip -o UniFi.unix.zip -d /usr/local
+/usr/local/bin/unzip -oq UniFi.unix.zip -d /usr/local
 echo " done."
 
 # Update Unifi's symbolic link for mongod to point to the version we just installed:
@@ -196,19 +259,28 @@ if [ `df -k | awk '$NF=="/"{print $2}'` -le 4194302 ]; then
 fi
 echo " done."
 
+# SNAPPY REPLACEMENT BROKEN FOR A WHILE - NEEDS TO BE CHECKED !!
+# If anybody has extra hardware, please check this block pcregrp 
+# works individually but not as part of the condition below 
+# SO, if breaks doesn't stop the update
 # Replace snappy java library to support AP adoption with latest firmware:
 echo -n "Updating snappy java..."
+cd $TMPDIR
 unifizipcontents=`zipinfo -1 UniFi.unix.zip`
-upstreamsnappyjavapattern='/(snappy-java-[^/]+\.jar)$'
+upstreamsnappyjavapattern='(snappy-java-[^/]+\.jar)'
+#In memory content not match thus dumping to a file 
+UNZIPCONTENTS=`mktemp`
+echo $unifizipcontents > $UNZIPCONTENTS
 # Make sure exactly one match is found
-if [ $(echo "${unifizipcontents}" | egrep -c ${upstreamsnappyjavapattern}) -eq 1 ]; then
-  upstreamsnappyjava="/usr/local/UniFi/lib/`echo \"${unifizipcontents}\" | pcregrep -o1 ${upstreamsnappyjavapattern}`"
+if [ `egrep -c '/(snappy-java-[^/]+\.jar)$' $UNZIPCONTENTS` -eq 1 ]; then
+  upstreamsnappyjava="/usr/local/UniFi/lib/`echo $unifizipcontents | pcregrep --buffer-size=1M -o '(snappy-java-[^/]+\.jar)'`"
   mv "${upstreamsnappyjava}" "${upstreamsnappyjava}.backup"
   cp /usr/local/share/java/classes/snappy-java.jar "${upstreamsnappyjava}"
-  echo " done."
+  echo "SNAPPY replacement ... done."
 else
   echo "ERROR: Could not locate UniFi's snappy java! AP adoption will most likely fail"
 fi
+
 
 # Fetch the rc script from github:
 echo -n "Installing rc script..."
@@ -231,7 +303,12 @@ fi
 if [ ! -z "${BACKUPFILE}" ] && [ -f ${BACKUPFILE} ]; then
   echo "Restoring UniFi data..."
   mv /usr/local/UniFi/data /usr/local/UniFi/data-`date +%Y%m%d-%H%M`
-  /usr/bin/tar -vxzf ${BACKUPFILE} -C /
+  /usr/bin/tar -xzf ${BACKUPFILE} -C /
+fi
+
+# Run the process as mongod if possible instead of root
+if [ $(grep -c mongodb /etc/passwd) -eq 1 ]; then
+  chown -R mongodb:mongodb /usr/local/UniFi
 fi
 
 # Start it up:
