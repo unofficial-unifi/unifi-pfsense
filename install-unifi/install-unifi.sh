@@ -163,8 +163,8 @@ AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
 AddPkg libXrandr
-AddPkg xorg-fonts-truetype
 AddPkg encodings
+AddPkg xorg-fonts-truetype
 AddPkg openjdk11
 AddPkg snappyjava
 AddPkg snappy
