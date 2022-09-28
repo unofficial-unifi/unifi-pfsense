@@ -142,6 +142,7 @@ AddPkg giflib
 AddPkg xorgproto
 AddPkg jpeg-turbo
 AddPkg libdeflate
+AddPkg zstd
 AddPkg tiff
 AddPkg lcms2
 AddPkg jbigkit
