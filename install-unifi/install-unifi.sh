@@ -140,6 +140,7 @@ AddPkg dejavu
 AddPkg giflib
 AddPkg xorgproto
 AddPkg jpeg-turbo
+AddPkg lcms2
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
