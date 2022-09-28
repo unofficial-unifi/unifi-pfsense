@@ -164,6 +164,8 @@ AddPkg javavmwrapper
 AddPkg java-zoneinfo
 AddPkg libXrandr
 AddPkg font-bh-ttf
+AddPkg font-misc-meltho
+AddPkg font-misc-ethiopic
 AddPkg encodings
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
