@@ -163,6 +163,7 @@ AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
 AddPkg libXrandr
+AddPkg font-bh-ttf
 AddPkg encodings
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
