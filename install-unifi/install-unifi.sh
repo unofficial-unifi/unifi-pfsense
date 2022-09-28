@@ -129,6 +129,7 @@ AddPkg () {
 
 #Add the following Packages for installation or reinstallation (if something was removed)
 AddPkg png
+AddPkg brotli
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
@@ -142,6 +143,7 @@ AddPkg xorgproto
 AddPkg jpeg-turbo
 AddPkg lcms2
 AddPkg tiff
+AddPkg jbigkit
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
