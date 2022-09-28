@@ -141,8 +141,9 @@ AddPkg dejavu
 AddPkg giflib
 AddPkg xorgproto
 AddPkg jpeg-turbo
-AddPkg lcms2
+AddPkg libdeflate
 AddPkg tiff
+AddPkg lcms2
 AddPkg jbigkit
 AddPkg libXdmcp
 AddPkg libpthread-stubs
