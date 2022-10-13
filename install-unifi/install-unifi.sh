@@ -168,6 +168,7 @@ AddPkg font-misc-meltho
 AddPkg font-misc-ethiopic
 AddPkg encodings
 AddPkg xorg-fonts-truetype
+AddPkg openjdk8
 AddPkg openjdk11
 AddPkg snappyjava
 AddPkg snappy
