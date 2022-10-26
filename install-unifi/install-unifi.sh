@@ -61,7 +61,7 @@ mongod --dbpath /usr/local/UniFi/data/db --repair
 
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
-  echo "Backing up UniFi data..."
+  echo -n "Backing up UniFi data..."
   BACKUPFILE=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
   /usr/bin/tar -vczf ${BACKUPFILE} /usr/local/UniFi/data
 fi
