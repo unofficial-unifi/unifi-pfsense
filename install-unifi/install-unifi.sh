@@ -143,9 +143,9 @@ AddPkg xorgproto
 AddPkg jpeg-turbo
 AddPkg libdeflate
 AddPkg zstd
+AddPkg jbigkit
 AddPkg tiff
 AddPkg lcms2
-AddPkg jbigkit
 AddPkg libXdmcp
 AddPkg libpthread-stubs
 AddPkg libXau
