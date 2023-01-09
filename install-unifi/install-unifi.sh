@@ -8,7 +8,7 @@ UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.92/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
-RC_SCRIPT_URL="https://raw.githubusercontent.com/indoes/unifi-pfsense/master/rc.d/unifi.sh"
+RC_SCRIPT_URL="https://raw.githubusercontent.com/indoes/unifi-pfsense/synced/rc.d/unifi.sh"
 
 CURRENT_MONGODB_VERSION=mongodb42
 
@@ -132,7 +132,7 @@ AddPkg png
 AddPkg brotli
 AddPkg freetype2
 #AddPkg fontconfig
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f https://github.com/indoes/unifi-pfsense/raw/master/fontconfig-2.13.94_1.1.txz
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f https://github.com/indoes/unifi-pfsense/raw/synced/fontconfig-2.13.94_1.1.txz
 AddPkg alsa-lib
 AddPkg mpdecimal
 AddPkg python37
@@ -161,7 +161,7 @@ AddPkg fontconfig
 AddPkg openjdk8
 AddPkg openjdk8-jre
 AddPkg bootstrap-openjdk8
-env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f https://github.com/indoes/unifi-pfsense/raw/master/snappyjava-1.1.7.5.txz
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f https://github.com/indoes/unifi-pfsense/raw/synced/snappyjava-1.1.7.5.txz
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
