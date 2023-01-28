@@ -107,24 +107,24 @@ tar vfx packagesite.pkg
 
 AddPkg () {
  	pkgname=$1
-        pkg unlock -yq $pkgname
- 	pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
- 	pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-	pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+  pkg unlock -yq $pkgname
+  pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
+  pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
+  pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
 
-	# compare version for update/install
- 	if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
-	     echo "Package $pkgname-$pkgvers already installed."
-	else
-	     env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f "$pkgurl" || exit 1
+  # compare version for update/install
+  if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
+    echo "Package $pkgname-$pkgvers already installed."
+  else
+    env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f "$pkgurl" || exit 1
 
-	     # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
-	     if [ "$pkgname" == "openjdk8" ]; then
-	          pkg unlock -yq snappyjava
-	          env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
-             fi
-        fi
-        pkg lock -yq $pkgname
+    # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
+    if [ "$pkgname" == "openjdk8" ]; then
+      pkg unlock -yq snappyjava
+      env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
+    fi
+  fi
+  pkg lock -yq $pkgname
 }
 
 #Add the following Packages for installation or reinstallation (if something was removed)
@@ -206,7 +206,7 @@ echo " done."
 # If partition size is < 4GB, add smallfiles option to mongodb
 echo -n "Checking partition size..."
 if [ `df -k | awk '$NF=="/"{print $2}'` -le 4194302 ]; then
-	echo -e "\nunifi.db.extraargs=--smallfiles\n" >> /usr/local/UniFi/data/system.properties
+  echo -e "\nunifi.db.extraargs=--smallfiles\n" >> /usr/local/UniFi/data/system.properties
 fi
 echo " done."
 
