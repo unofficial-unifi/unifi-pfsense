@@ -129,6 +129,7 @@ AddPkg () {
 
 #Add the following Packages for installation or reinstallation (if something was removed)
 AddPkg png
+AddPkg brotli
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
