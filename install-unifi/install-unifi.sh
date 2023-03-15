@@ -160,6 +160,7 @@ AddPkg lcms2
 AddPkg libXrandr
 AddPkg encodings
 AddPkg font-bh-ttf
+addPkg font-misc-ethiopic
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
 AddPkg snappyjava
