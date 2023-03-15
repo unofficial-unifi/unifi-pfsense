@@ -158,6 +158,7 @@ AddPkg javavmwrapper
 AddPkg java-zoneinfo
 AddPkg lcms2
 AddPkg libXrandr
+AddPkg xorg-fonts-truetype
 AddPkg openjdk11
 AddPkg snappyjava
 AddPkg snappy
