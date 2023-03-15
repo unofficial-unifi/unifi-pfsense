@@ -159,6 +159,7 @@ AddPkg java-zoneinfo
 AddPkg lcms2
 AddPkg libXrandr
 AddPkg encodings
+AddPkg font-bh-ttf
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
 AddPkg snappyjava
