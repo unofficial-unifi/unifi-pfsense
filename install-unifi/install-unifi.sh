@@ -164,7 +164,7 @@ AddPkg font-misc-ethiopic
 AddPkg font-misc-meltho
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
-AddPkg snappyjava
+# AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
