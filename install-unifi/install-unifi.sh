@@ -161,6 +161,7 @@ AddPkg libXrandr
 AddPkg encodings
 AddPkg font-bh-ttf
 AddPkg font-misc-ethiopic
+AddPkg font-misc-meltho
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
 AddPkg snappyjava
