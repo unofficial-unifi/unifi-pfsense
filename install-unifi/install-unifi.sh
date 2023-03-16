@@ -156,6 +156,8 @@ AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
+AddPkg openjdk8
+AddPkg snappyjava
 AddPkg lcms2
 AddPkg libXrandr
 AddPkg encodings
@@ -164,7 +166,6 @@ AddPkg font-misc-ethiopic
 AddPkg font-misc-meltho
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
-# AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
