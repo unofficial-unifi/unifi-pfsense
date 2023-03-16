@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.92/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.3.83/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
@@ -158,6 +158,14 @@ AddPkg javavmwrapper
 AddPkg java-zoneinfo
 AddPkg openjdk8
 AddPkg snappyjava
+AddPkg lcms2
+AddPkg libXrandr
+AddPkg encodings
+AddPkg font-bh-ttf
+AddPkg font-misc-ethiopic
+AddPkg font-misc-meltho
+AddPkg xorg-fonts-truetype
+AddPkg openjdk11
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
