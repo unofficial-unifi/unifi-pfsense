@@ -169,7 +169,7 @@ AddPkg font-misc-ethiopic
 AddPkg encodings
 AddPkg xorg-fonts-truetype
 AddPkg openjdk8
-AddPkg openjdk11
+AddPkg openjdk12
 AddPkg snappyjava
 AddPkg snappy
 AddPkg cyrus-sasl
