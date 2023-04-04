@@ -86,8 +86,7 @@ echo " done."
 
 
 echo "Removing discontinued packages..."
-old_mongos=`pkg info | grep mongodb | grep -v ${CURRENT_MONGODB_VERSION}`
-for old_mongo in "${old_mongos}"; do
+pkg info | grep mongodb | grep -v ${CURRENT_MONGODB_VERSION} | while read -r old_mongo; do
   package=`echo "$old_mongo" | cut -d' ' -f1`
   pkg unlock -yq ${package}
   env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${package}
