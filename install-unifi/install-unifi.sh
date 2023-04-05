@@ -10,7 +10,9 @@ UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.97/UniFi.unix.zip"
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
 
-CURRENT_MONGODB_VERSION=mongodb42
+# List of valid/supported mongodb package names, sorted with the latest being first
+# As UniFi adds support for new mongodb versions, just prepend them to this list
+SUPPORTED_MONGODB_PACKAGES="mongodb42 mongodb40 mongodb36 mongodb34 mongodb32 mongodb"
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -82,16 +84,6 @@ echo -n "Mounting new filesystems..."
 echo " done."
 
 
-echo "Removing discontinued packages..."
-old_mongos=`pkg info | grep mongodb | grep -v ${CURRENT_MONGODB_VERSION}`
-for old_mongo in "${old_mongos}"; do
-  package=`echo "$old_mongo" | cut -d' ' -f1`
-  pkg unlock -yq ${package}
-  env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${package}
-done
-echo " done."
-
-
 echo "Gathering package list from remote repository..."
 # Build a list of possible packagesite.* URLs
 for ext in pkg txz; do
@@ -104,6 +96,27 @@ if ! fetch -q1o - $FREEBSD_PACKAGE_LIST_URLS > packagesite.pkg 2> /dev/null; the
 fi
 tar fx packagesite.pkg || exit 1
 echo "Done."
+
+
+# Find the latest supported mongodb version that's available in the repository
+for package_name in $SUPPORTED_MONGODB_PACKAGES; do
+  if grep -q "\"name\":\"$package_name\"" packagesite.yaml; then
+    CURRENT_MONGODB_VERSION="$package_name"
+    break
+  fi
+done
+
+if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
+  echo "Removing discontinued packages..."
+  pkg info | grep mongodb | grep -v ${CURRENT_MONGODB_VERSION} | while read -r old_mongo; do
+    package=`echo "$old_mongo" | cut -d' ' -f1`
+    pkg unlock -yq ${package}
+    env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${package}
+  done
+  echo " done."
+else
+  echo "Could not locate a valid mongodb package"
+fi
 
 
 
