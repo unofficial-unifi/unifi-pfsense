@@ -31,9 +31,6 @@ ABI=`/usr/sbin/pkg config abi`
 # FreeBSD package source:
 FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/"
 
-# FreeBSD package list:
-FREEBSD_PACKAGE_LIST_URL="${FREEBSD_PACKAGE_URL}packagesite.pkg"
-
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
 if [ -f /usr/local/etc/rc.d/unifi.sh ]; then
@@ -95,15 +92,26 @@ done
 echo " done."
 
 
+echo "Gathering package list from remote repository..."
+# Build a list of possible packagesite.* URLs
+for ext in pkg txz; do
+  FREEBSD_PACKAGE_LIST_URLS="$FREEBSD_PACKAGE_LIST_URLS ${FREEBSD_PACKAGE_URL}packagesite.${ext}"
+done
+# Try each of the URLs in the list and exit if they all fail
+if ! fetch -q1o - $FREEBSD_PACKAGE_LIST_URLS > packagesite.pkg 2> /dev/null; then
+  echo "Error downloading $FREEBSD_PACKAGE_LIST_URLS"
+  exit 1
+fi
+tar fx packagesite.pkg || exit 1
+echo "Done."
+
+
 
 # Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
 # -F skips a package if it's already installed, without throwing an error.
 echo "Installing required packages..."
 #uncomment below for pfSense 2.2.x:
 #env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
-
-fetch ${FREEBSD_PACKAGE_LIST_URL}
-tar vfx packagesite.pkg
 
 AddPkg () {
   pkgname=$1
