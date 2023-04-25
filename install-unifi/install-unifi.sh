@@ -189,7 +189,9 @@ AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
 AddPkg boost-libs
-AddPkg ${CURRENT_MONGODB_VERSION}
+if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
+  AddPkg ${CURRENT_MONGODB_VERSION}
+fi
 AddPkg unzip
 AddPkg pcre
 
