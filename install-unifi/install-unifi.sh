@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.4.156-6ee9e412d1/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.4.158-a48b7ecb8e/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
@@ -149,6 +149,11 @@ AddPkg () {
 #Add the following Packages for installation or reinstallation (if something was removed)
 AddPkg png
 AddPkg brotli
+AddPkg jpeg-turbo
+AddPkg zstd
+AddPkg libdeflate
+AddPkg jbigkit
+AddPkg tiff
 AddPkg freetype2
 AddPkg fontconfig
 AddPkg alsa-lib
