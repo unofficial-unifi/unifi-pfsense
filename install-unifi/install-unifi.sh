@@ -189,6 +189,7 @@ AddPkg font-misc-ethiopic
 AddPkg font-misc-meltho
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
+AddPkg openjdk17
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
