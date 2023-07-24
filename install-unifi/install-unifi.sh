@@ -193,6 +193,7 @@ AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
 AddPkg boost-libs
+AddPkg libunwind
 if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
   AddPkg ${CURRENT_MONGODB_VERSION}
 fi
