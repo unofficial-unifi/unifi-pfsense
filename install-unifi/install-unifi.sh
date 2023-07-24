@@ -6,13 +6,12 @@
 # The latest version of UniFi:
 UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.4.162-3116043f9f/UniFi.unix.zip"
 
-
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
 
 # List of valid/supported mongodb package names, sorted with the latest being first
 # As UniFi adds support for new mongodb versions, just prepend them to this list
-SUPPORTED_MONGODB_PACKAGES="mongodb53 mongodb44 mongodb42 mongodb40 mongodb36 mongodb34 mongodb32 mongodb"
+SUPPORTED_MONGODB_PACKAGES="mongodb44 mongodb42 mongodb40 mongodb36 mongodb34 mongodb32 mongodb"
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
