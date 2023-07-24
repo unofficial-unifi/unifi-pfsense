@@ -195,6 +195,7 @@ AddPkg icu
 AddPkg boost-libs
 AddPkg libunwind
 AddPkg snowballstemmer
+AddPkg yaml-cpp
 if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
   AddPkg ${CURRENT_MONGODB_VERSION}
 fi
