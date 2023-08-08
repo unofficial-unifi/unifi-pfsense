@@ -11,6 +11,12 @@ UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.97/UniFi.unix.zip"
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
 
 CURRENT_MONGODB_VERSION=mongodb42
+MONGO_NEEDS_FALLBACK_VERSION="2.7."
+MONGO_NEEDS_SSL="/usr/lib/libssl.so.30"
+if [ $(pkg config abi | grep -c "FreeBSD:14:") -eq 1 ] && [ $(grep -c $MONGO_NEEDS_FALLBACK_VERSION /etc/version) -eq 1 ] && [ ! -f $MONGO_NEEDS_SSL ]; then 
+	FALLBACK_MONGO_ABI="FreeBSD:13:$(pkg config abi | awk -F ':' '{print $3}')"
+	FALLBACK_MONGO_PACKAGE_URL="https://pkg.freebsd.org/${FALLBACK_MONGO_ABI}/latest/"
+fi
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -107,10 +113,11 @@ tar vfx packagesite.pkg
 
 AddPkg () {
   pkgname=$1
+	base_url=${2:-FREEBSD_PACKAGE_URL}
   pkg unlock -yq $pkgname
   pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
   pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-  pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+  pkgurl="${base_url}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
 
   # compare version for update/install
   if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
@@ -161,7 +168,11 @@ AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
 AddPkg boost-libs
-AddPkg ${CURRENT_MONGODB_VERSION}
+if [ -n "$FALLBACK_MONGO_PACKAGE_URL" ]; then
+	AddPkg ${CURRENT_MONGODB_VERSION} ${FALLBACK_MONGO_PACKAGE_URL}
+else
+	AddPkg ${CURRENT_MONGODB_VERSION}
+fi
 AddPkg unzip
 AddPkg pcre
 
