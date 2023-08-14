@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.4.162-3116043f9f/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.5.169-2ec9b4cd24/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
@@ -12,6 +12,14 @@ RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/
 # List of valid/supported mongodb package names, sorted with the latest being first
 # As UniFi adds support for new mongodb versions, just prepend them to this list
 SUPPORTED_MONGODB_PACKAGES="mongodb44 mongodb42 mongodb40 mongodb36 mongodb34 mongodb32 mongodb"
+
+CURRENT_MONGODB_VERSION=mongodb44
+MONGO_NEEDS_FALLBACK_VERSION="2.7."
+MONGO_NEEDS_SSL="/usr/lib/libssl.so.30"
+if [ $(pkg config abi | grep -c "FreeBSD:14:") -eq 1 ] && [ $(grep -c $MONGO_NEEDS_FALLBACK_VERSION /etc/version) -eq 1 ] && [ ! -f $MONGO_NEEDS_SSL ]; then 
+	FALLBACK_MONGO_ABI="FreeBSD:13:$(pkg config abi | awk -F ':' '{print $3}')"
+	FALLBACK_MONGO_PACKAGE_URL="https://pkg.freebsd.org/${FALLBACK_MONGO_ABI}/latest/"
+fi
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -125,10 +133,12 @@ echo "Installing required packages..."
 
 AddPkg () {
   pkgname=$1
+  base_url=${2:-$FREEBSD_PACKAGE_URL}
   pkg unlock -yq $pkgname
   pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
   pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-  pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+  #pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+  pkgurl="${base_url}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
 
   # compare version for update/install
   if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
@@ -188,6 +198,9 @@ AddPkg font-misc-ethiopic
 AddPkg font-misc-meltho
 AddPkg xorg-fonts-truetype
 AddPkg openjdk11
+AddPkg graphite2
+AddPkg harfbuzz
+AddPkg openjdk17
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
@@ -195,8 +208,10 @@ AddPkg boost-libs
 AddPkg libunwind
 AddPkg snowballstemmer
 AddPkg yaml-cpp
-if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
-  AddPkg ${CURRENT_MONGODB_VERSION}
+if [ -n "$FALLBACK_MONGO_PACKAGE_URL" ]; then
+	AddPkg ${CURRENT_MONGODB_VERSION} ${FALLBACK_MONGO_PACKAGE_URL}
+else
+	AddPkg ${CURRENT_MONGODB_VERSION}
 fi
 AddPkg unzip
 AddPkg pcre
