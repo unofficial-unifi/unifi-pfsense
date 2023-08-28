@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.5.169-2ec9b4cd24/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.5.172-39991973d0/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
@@ -189,7 +189,6 @@ AddPkg font-bh-ttf
 AddPkg font-misc-ethiopic
 AddPkg font-misc-meltho
 AddPkg xorg-fonts-truetype
-AddPkg openjdk11
 AddPkg graphite2
 AddPkg harfbuzz
 AddPkg openjdk17
@@ -200,11 +199,7 @@ AddPkg boost-libs
 AddPkg libunwind
 AddPkg snowballstemmer
 AddPkg yaml-cpp
-if [ -n "$FALLBACK_MONGO_PACKAGE_URL" ]; then
-	AddPkg ${CURRENT_MONGODB_VERSION} ${FALLBACK_MONGO_PACKAGE_URL}
-else
-	AddPkg ${CURRENT_MONGODB_VERSION}
-fi
+AddPkg ${CURRENT_MONGODB_VERSION}
 AddPkg unzip
 AddPkg pcre
 
