@@ -125,10 +125,12 @@ echo "Installing required packages..."
 
 AddPkg () {
   pkgname=$1
+  base_url=${2:-$FREEBSD_PACKAGE_URL}
   pkg unlock -yq $pkgname
   pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
   pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-  pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+  #pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+  pkgurl="${base_url}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
 
   # compare version for update/install
   if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
@@ -198,8 +200,10 @@ AddPkg boost-libs
 AddPkg libunwind
 AddPkg snowballstemmer
 AddPkg yaml-cpp
-if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
-  AddPkg ${CURRENT_MONGODB_VERSION}
+if [ -n "$FALLBACK_MONGO_PACKAGE_URL" ]; then
+	AddPkg ${CURRENT_MONGODB_VERSION} ${FALLBACK_MONGO_PACKAGE_URL}
+else
+	AddPkg ${CURRENT_MONGODB_VERSION}
 fi
 AddPkg unzip
 AddPkg pcre
