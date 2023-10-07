@@ -13,14 +13,14 @@ RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/
 CURRENT_MONGODB_VERSION=mongodb42
 
 # If pkg-ng is not yet installed, bootstrap it:
-if ! /usr/sbin/pkg -N 2> /dev/null; then
+if ! /usr/sbin/pkg -N -- 2> /dev/null; then
   echo "FreeBSD pkgng not installed. Installing..."
   env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap
   echo " done."
 fi
 
 # If installation failed, exit:
-if ! /usr/sbin/pkg -N 2> /dev/null; then
+if ! /usr/sbin/pkg -N -- 2> /dev/null; then
   echo "ERROR: pkgng installation failed. Exiting."
   exit 1
 fi
