@@ -26,7 +26,7 @@ unifi_start()
 
     # The process will run until it is terminated and does not fork on its own.
     # So we start it in the background and stash the pid:
-    /usr/local/bin/java -jar /usr/local/UniFi/lib/ace.jar start &
+    /usr/local/bin/java --add-opens=java.base/java.time=ALL-UNNAMED -jar /usr/local/UniFi/lib/ace.jar start &
     echo $! > $pidfile
 
   fi
