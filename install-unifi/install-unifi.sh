@@ -8,7 +8,7 @@ UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.97/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
-RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
+RC_SCRIPT_URL="https://raw.githubusercontent.com/indoes/unifi-pfsense/synced/rc.d/unifi.sh"
 
 CURRENT_MONGODB_VERSION=mongodb42
 
@@ -131,7 +131,8 @@ AddPkg () {
 AddPkg png
 AddPkg brotli
 AddPkg freetype2
-AddPkg fontconfig
+#AddPkg fontconfig
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f https://github.com/indoes/unifi-pfsense/raw/synced/fontconfig-2.13.94_1.1.txz
 AddPkg alsa-lib
 AddPkg mpdecimal
 AddPkg python37
@@ -155,8 +156,11 @@ AddPkg libXrender
 AddPkg libinotify
 AddPkg javavmwrapper
 AddPkg java-zoneinfo
+AddPkg fontconfig
 AddPkg openjdk8
-AddPkg snappyjava
+AddPkg openjdk8-jre
+AddPkg bootstrap-openjdk8
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f https://github.com/indoes/unifi-pfsense/raw/synced/snappyjava-1.1.7.5.txz
 AddPkg snappy
 AddPkg cyrus-sasl
 AddPkg icu
@@ -188,6 +192,11 @@ echo " done."
 echo -n "Updating mongod link..."
 /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
 echo " done."
+
+# Update openjdk symbolic link for java to point to /usr/local/bin/java:
+/bin/unlink /usr/local/bin/java
+/bin/ln -sf /usr/local/openjdk8-jre/bin/java /usr/local/bin/java
+
 
 # If partition size is < 4GB, add smallfiles option to mongodb
 echo -n "Checking partition size..."
