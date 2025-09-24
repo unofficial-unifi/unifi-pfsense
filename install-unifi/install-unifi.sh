@@ -201,7 +201,9 @@ AddPkg boost-libs
 AddPkg libunwind
 AddPkg snowballstemmer
 AddPkg yaml-cpp
-AddPkg ${CURRENT_MONGODB_VERSION}
+if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
+  AddPkg ${CURRENT_MONGODB_VERSION}
+fi
 AddPkg unzip
 AddPkg pcre
 
