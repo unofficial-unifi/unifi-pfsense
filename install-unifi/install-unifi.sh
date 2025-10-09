@@ -4,7 +4,7 @@
 # Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/9.2.79-oc34psn1p2/UniFi.unix.zip"
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/9.5.21-6nxxr6v29z/UniFi.unix.zip"
 
 
 # The rc script associated with this branch or fork:
@@ -201,7 +201,9 @@ AddPkg boost-libs
 AddPkg libunwind
 AddPkg snowballstemmer
 AddPkg yaml-cpp
-AddPkg ${CURRENT_MONGODB_VERSION}
+if [ ! -z "$CURRENT_MONGODB_VERSION" ]; then
+  AddPkg ${CURRENT_MONGODB_VERSION}
+fi
 AddPkg unzip
 AddPkg pcre
 
