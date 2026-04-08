@@ -1,16 +1,22 @@
 #!/bin/sh
 
 # install-unifi.sh
-# Installs the Uni-Fi controller software on a FreeBSD machine (presumably running pfSense).
+# Installs the UniFi Controller software on a FreeBSD machine (presumably running pfSense).
+# Requires FreeBSD 15.0+ / pfSense 2.8.1+
 
 # The latest version of UniFi:
-UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/7.2.97/UniFi.unix.zip"
-
+UNIFI_SOFTWARE_URL="https://dl.ui.com/unifi/10.1.84/UniFi.unix.zip"
 
 # The rc script associated with this branch or fork:
 RC_SCRIPT_URL="https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/rc.d/unifi.sh"
 
-CURRENT_MONGODB_VERSION=mongodb42
+CURRENT_MONGODB_VERSION=mongodb70
+
+# External MongoDB support (set these env vars before running to use external MongoDB)
+MONGO_EXTERNAL=${MONGO_EXTERNAL:-false}
+MONGO_URI=${MONGO_URI:-}
+MONGO_STAT_URI=${MONGO_STAT_URI:-}
+MONGO_DB_NAME=${MONGO_DB_NAME:-unifi}
 
 # If pkg-ng is not yet installed, bootstrap it:
 if ! /usr/sbin/pkg -N 2> /dev/null; then
@@ -25,14 +31,37 @@ if ! /usr/sbin/pkg -N 2> /dev/null; then
   exit 1
 fi
 
+# Require FreeBSD 15.0 or later:
+OSVERSION=$(uname -U)
+if [ "${OSVERSION}" -lt 1500000 ]; then
+  echo "ERROR: This script requires FreeBSD 15.0 or later. Detected: $(uname -r)"
+  exit 1
+fi
+
 # Determine this installation's Application Binary Interface
-ABI=`/usr/sbin/pkg config abi`
+ABI=$(/usr/sbin/pkg config abi)
 
-# FreeBSD package source:
-FREEBSD_PACKAGE_URL="https://pkg.freebsd.org/${ABI}/latest/"
+# Configure FreeBSD package repository for dependency resolution
+FREEBSD_REPO_URL="https://pkg.freebsd.org/${ABI}/latest"
+FREEBSD_REPO_CONF="/usr/local/etc/pkg/repos/FreeBSD-unifi.conf"
 
-# FreeBSD package list:
-FREEBSD_PACKAGE_LIST_URL="${FREEBSD_PACKAGE_URL}packagesite.pkg"
+mkdir -p /usr/local/etc/pkg/repos
+cat > "${FREEBSD_REPO_CONF}" <<REPOEOF
+FreeBSD-unifi: {
+  url: "${FREEBSD_REPO_URL}",
+  enabled: yes,
+  mirror_type: "none"
+}
+REPOEOF
+
+# Lock pkg to prevent it from being upgraded (pfSense's pkg is built against
+# pfSense's base libraries; the FreeBSD upstream pkg will break)
+pkg lock -yq pkg 2>/dev/null
+
+# Update the package catalog from the FreeBSD repo
+echo "Updating package catalog..."
+env ASSUME_ALWAYS_YES=YES IGNORE_OSVERSION=yes /usr/sbin/pkg update -f -r FreeBSD-unifi
+echo " done."
 
 # Stop the controller if it's already running...
 # First let's try the rc script if it exists:
@@ -45,37 +74,39 @@ fi
 # Then to be doubly sure, let's make sure ace.jar isn't running for some other reason:
 if [ $(ps ax | grep -c "/usr/local/UniFi/lib/[a]ce.jar start") -ne 0 ]; then
   echo -n "Killing ace.jar process..."
-  /bin/kill -15 `ps ax | grep "/usr/local/UniFi/lib/[a]ce.jar start" | awk '{ print $1 }'`
+  /bin/kill -15 $(ps ax | grep "/usr/local/UniFi/lib/[a]ce.jar start" | awk '{ print $1 }')
   echo " done."
 fi
 
 # And then make sure mongodb doesn't have the db file open:
 if [ $(ps ax | grep -c "/usr/local/UniFi/data/[d]b") -ne 0 ]; then
   echo -n "Killing mongod process..."
-  /bin/kill -15 `ps ax | grep "/usr/local/UniFi/data/[d]b" | awk '{ print $1 }'`
+  /bin/kill -15 $(ps ax | grep "/usr/local/UniFi/data/[d]b" | awk '{ print $1 }')
   echo " done."
 fi
 
-# Repairs Mongodb database in case of corruption
-mongod --dbpath /usr/local/UniFi/data/db --repair
+# Repairs MongoDB database in case of corruption (only for local MongoDB)
+if [ "${MONGO_EXTERNAL}" != "true" ] && [ -d /usr/local/UniFi/data/db ]; then
+  mongod --dbpath /usr/local/UniFi/data/db --repair
+fi
 
 # If an installation exists, we'll need to back up configuration:
 if [ -d /usr/local/UniFi/data ]; then
   echo "Backing up UniFi data..."
-  BACKUPFILE=/var/backups/unifi-`date +"%Y%m%d_%H%M%S"`.tgz
-  /usr/bin/tar -vczf ${BACKUPFILE} /usr/local/UniFi/data
+  BACKUPFILE=/var/backups/unifi-$(date +"%Y%m%d_%H%M%S").tgz
+  /usr/bin/tar -vczf "${BACKUPFILE}" /usr/local/UniFi/data
 fi
 
-# Add the fstab entries apparently required for OpenJDKse:
+# Add the fstab entries apparently required for OpenJDK:
 if [ $(grep -c fdesc /etc/fstab) -eq 0 ]; then
   echo -n "Adding fdesc filesystem to /etc/fstab..."
-  echo -e "fdesc\t\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0" >> /etc/fstab
+  printf "fdesc\t\t\t/dev/fd\t\tfdescfs\trw\t\t0\t0\n" >> /etc/fstab
   echo " done."
 fi
 
 if [ $(grep -c proc /etc/fstab) -eq 0 ]; then
   echo -n "Adding procfs filesystem to /etc/fstab..."
-  echo -e "proc\t\t\t/proc\t\tprocfs\trw\t\t0\t0" >> /etc/fstab
+  printf "proc\t\t\t/proc\t\tprocfs\trw\t\t0\t0\n" >> /etc/fstab
   echo " done."
 fi
 
@@ -84,94 +115,64 @@ echo -n "Mounting new filesystems..."
 /sbin/mount -a
 echo " done."
 
+# Unlock all previously locked packages to avoid conflicts
+pkg unlock -ayq 2>/dev/null
 
+# Remove all old MongoDB versions
 echo "Removing discontinued packages..."
-old_mongos=`pkg info | grep mongodb | grep -v ${CURRENT_MONGODB_VERSION}`
-for old_mongo in "${old_mongos}"; do
-  package=`echo "$old_mongo" | cut -d' ' -f1`
-  pkg unlock -yq ${package}
-  env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${package}
+for old_ver in mongodb36 mongodb40 mongodb42 mongodb44 mongodb50 mongodb60; do
+  if pkg info -e ${old_ver} 2>/dev/null; then
+    env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${old_ver}
+  fi
+done
+
+# Remove old Java versions
+for old_java in openjdk8 openjdk11; do
+  if pkg info -e ${old_java} 2>/dev/null; then
+    env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${old_java}
+  fi
+done
+
+# Remove packages no longer needed
+for old_pkg in python37 mpdecimal snappyjava; do
+  if pkg info -e ${old_pkg} 2>/dev/null; then
+    env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete ${old_pkg}
+  fi
 done
 echo " done."
 
-
-
-# Install mongodb, OpenJDK, and unzip (required to unpack Ubiquiti's download):
-# -F skips a package if it's already installed, without throwing an error.
+# Install packages using pkg install (auto-resolves all dependencies)
 echo "Installing required packages..."
-#uncomment below for pfSense 2.2.x:
-#env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install mongodb openjdk unzip pcre v8 snappy
 
-fetch ${FREEBSD_PACKAGE_LIST_URL}
-tar vfx packagesite.pkg
+# Install OpenJDK 17 and all its dependencies
+env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install -r FreeBSD-unifi -f \
+  openjdk17 \
+  javavmwrapper \
+  java-zoneinfo \
+  libinotify \
+  unzip \
+  || exit 1
 
-AddPkg () {
-  pkgname=$1
-  pkg unlock -yq $pkgname
-  pkginfo=`grep "\"name\":\"$pkgname\"" packagesite.yaml`
-  pkgvers=`echo $pkginfo | pcregrep -o1 '"version":"(.*?)"' | head -1`
-  pkgurl="${FREEBSD_PACKAGE_URL}`echo $pkginfo | pcregrep -o1 '"path":"(.*?)"' | head -1`"
+# Install MongoDB (only if using local MongoDB)
+if [ "${MONGO_EXTERNAL}" != "true" ]; then
+  env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install -r FreeBSD-unifi -f \
+    ${CURRENT_MONGODB_VERSION} \
+    || exit 1
+fi
 
-  # compare version for update/install
-  if [ `pkg info | grep -c $pkgname-$pkgvers` -eq 1 ]; then
-    echo "Package $pkgname-$pkgvers already installed."
-  else
-    env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg add -f "$pkgurl" || exit 1
+# Lock installed packages to prevent pfSense from removing them during updates
+for pkg_to_lock in openjdk17 javavmwrapper java-zoneinfo libinotify unzip; do
+  pkg lock -yq ${pkg_to_lock} 2>/dev/null
+done
 
-    # if update openjdk8 then force detele snappyjava to reinstall for new version of openjdk
-    if [ "$pkgname" == "openjdk8" ]; then
-      pkg unlock -yq snappyjava
-      env ASSUME_ALWAYS_YES=YES /usr/sbin/pkg delete snappyjava
-    fi
-  fi
-  pkg lock -yq $pkgname
-}
-
-#Add the following Packages for installation or reinstallation (if something was removed)
-AddPkg png
-AddPkg brotli
-AddPkg freetype2
-AddPkg fontconfig
-AddPkg alsa-lib
-AddPkg mpdecimal
-AddPkg python37
-AddPkg libfontenc
-AddPkg mkfontscale
-AddPkg dejavu
-AddPkg giflib
-AddPkg xorgproto
-AddPkg libXdmcp
-AddPkg libXau
-AddPkg libxcb
-AddPkg libICE
-AddPkg libSM
-AddPkg libX11
-AddPkg libXfixes
-AddPkg libXext
-AddPkg libXi
-AddPkg libXt
-AddPkg libXtst
-AddPkg libXrender
-AddPkg libinotify
-AddPkg javavmwrapper
-AddPkg java-zoneinfo
-AddPkg openjdk8
-AddPkg snappyjava
-AddPkg snappy
-AddPkg cyrus-sasl
-AddPkg icu
-AddPkg boost-libs
-AddPkg ${CURRENT_MONGODB_VERSION}
-AddPkg unzip
-AddPkg pcre
-
-# Clean up downloaded package manifest:
-rm packagesite.*
+if [ "${MONGO_EXTERNAL}" != "true" ]; then
+  pkg lock -yq ${CURRENT_MONGODB_VERSION} 2>/dev/null
+fi
 
 echo " done."
 
-# Switch to a temp directory for the Unifi download:
-cd `mktemp -d -t unifi`
+# Switch to a temp directory for the UniFi download:
+cd $(mktemp -d -t unifi) || exit 1
 
 # Download the controller from Ubiquiti (assuming acceptance of the EULA):
 echo -n "Downloading the UniFi controller software..."
@@ -184,30 +185,31 @@ echo -n "Installing UniFi controller in /usr/local..."
 /usr/local/bin/unzip -o UniFi.unix.zip -d /usr/local
 echo " done."
 
-# Update Unifi's symbolic link for mongod to point to the version we just installed:
-echo -n "Updating mongod link..."
-/bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
-echo " done."
-
-# If partition size is < 4GB, add smallfiles option to mongodb
-echo -n "Checking partition size..."
-if [ `df -k | awk '$NF=="/"{print $2}'` -le 4194302 ]; then
-  echo -e "\nunifi.db.extraargs=--smallfiles\n" >> /usr/local/UniFi/data/system.properties
-fi
-echo " done."
-
-# Replace snappy java library to support AP adoption with latest firmware:
-echo -n "Updating snappy java..."
-unifizipcontents=`zipinfo -1 UniFi.unix.zip`
-upstreamsnappyjavapattern='/(snappy-java-[^/]+\.jar)$'
-# Make sure exactly one match is found
-if [ $(echo "${unifizipcontents}" | egrep -c ${upstreamsnappyjavapattern}) -eq 1 ]; then
-  upstreamsnappyjava="/usr/local/UniFi/lib/`echo \"${unifizipcontents}\" | pcregrep -o1 ${upstreamsnappyjavapattern}`"
-  mv "${upstreamsnappyjava}" "${upstreamsnappyjava}.backup"
-  cp /usr/local/share/java/classes/snappy-java.jar "${upstreamsnappyjava}"
+# Update UniFi's symbolic link for mongod to point to the version we just installed
+# (only if using local MongoDB):
+if [ "${MONGO_EXTERNAL}" != "true" ]; then
+  echo -n "Updating mongod link..."
+  /bin/ln -sf /usr/local/bin/mongod /usr/local/UniFi/bin/mongod
   echo " done."
-else
-  echo "ERROR: Could not locate UniFi's snappy java! AP adoption will most likely fail"
+fi
+
+# Configure external MongoDB if requested:
+if [ "${MONGO_EXTERNAL}" = "true" ] && [ -n "${MONGO_URI}" ]; then
+  echo "Configuring external MongoDB..."
+  mkdir -p /usr/local/UniFi/data
+  # Remove existing mongo config lines if present
+  if [ -f /usr/local/UniFi/data/system.properties ]; then
+    grep -v '^db\.mongo\.\|^statdb\.mongo\.\|^unifi\.db\.name' \
+      /usr/local/UniFi/data/system.properties > /usr/local/UniFi/data/system.properties.tmp
+    mv /usr/local/UniFi/data/system.properties.tmp /usr/local/UniFi/data/system.properties
+  fi
+  cat >> /usr/local/UniFi/data/system.properties <<MONGOEOF
+db.mongo.local=false
+db.mongo.uri=${MONGO_URI}
+statdb.mongo.uri=${MONGO_STAT_URI:-${MONGO_URI}_stat}
+unifi.db.name=${MONGO_DB_NAME}
+MONGOEOF
+  echo " done."
 fi
 
 # Fetch the rc script from github:
@@ -228,11 +230,14 @@ if [ ! -f /etc/rc.conf.local ] || [ $(grep -c unifi_enable /etc/rc.conf.local) -
 fi
 
 # Restore the backup:
-if [ ! -z "${BACKUPFILE}" ] && [ -f ${BACKUPFILE} ]; then
+if [ -n "${BACKUPFILE}" ] && [ -f "${BACKUPFILE}" ]; then
   echo "Restoring UniFi data..."
-  mv /usr/local/UniFi/data /usr/local/UniFi/data-`date +%Y%m%d-%H%M`
-  /usr/bin/tar -vxzf ${BACKUPFILE} -C /
+  mv /usr/local/UniFi/data "/usr/local/UniFi/data-$(date +%Y%m%d-%H%M)"
+  /usr/bin/tar -vxzf "${BACKUPFILE}" -C /
 fi
+
+# Clean up the temporary repo config
+rm -f "${FREEBSD_REPO_CONF}"
 
 # Start it up:
 echo -n "Starting the unifi service..."

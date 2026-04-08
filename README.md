@@ -15,15 +15,20 @@ Status
 
 The project provides an rc script to start and stop the UniFi controller, and an installation script to automatically download and install everything, including the rc script.
 
-This project uses the latest branch from Ubiquiti rather than the LTS branch. From December 2020, this means the 6.x branch.
+**Current versions:**
+- UniFi Controller: **10.1.84**
+- Java: **OpenJDK 17**
+- MongoDB: **7.0** (local default, with external MongoDB support)
 
 
 Compatibility
 -------------
 
-The script is known to work on FreeBSD-based systems, including pfSense, OPNsense, FreeNAS, and more. Be sure to check the forks for versions specific to other systems.
+**Requires FreeBSD 15.0+ / pfSense 2.8.1+**
 
-This script *will destroy* a legacy BIOS system booting from an MBR formatted ZFS root volume; see [#168](https://github.com/unofficial-unifi/unifi-pfsense/issues/168). Again, using this script on a system with an MBR formatted ZFS root volume will break your system. It appears that one of the dependency packages may cause this. We have not isolated which. To avoid this problem, use UEFI mode if available, use GPT partitions, or use a filesystem other than ZFS. If you have already set up your system to use legacy BIOS, MBR partitons, and ZFS, then *do not run this script.*
+This script targets modern FreeBSD 15-based systems. Older versions of pfSense (2.7.x and earlier) and FreeBSD (14.x and earlier) are **not supported** by this version of the script.
+
+This script *will destroy* a legacy BIOS system booting from an MBR formatted ZFS root volume; see [#168](https://github.com/unofficial-unifi/unifi-pfsense/issues/168). Again, using this script on a system with an MBR formatted ZFS root volume will break your system. It appears that one of the dependency packages may cause this. We have not isolated which. To avoid this problem, use UEFI mode if available, use GPT partitions, or use a filesystem other than ZFS. If you have already set up your system to use legacy BIOS, MBR partitions, and ZFS, then *do not run this script.*
 
 
 Challenges
@@ -63,12 +68,30 @@ To install the controller software and the rc script:
 2. Run this one-line command, which downloads the install script from Github and executes it with sh:
 
   ```
-    fetch -o - https://tinyurl.com/3ukj9253 | sh -s
+    fetch -o - https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/install-unifi/install-unifi.sh | sh -s
   ```
 
 The install script will install dependencies, download the UniFi controller software, make some adjustments, and start the UniFi controller.
 
-The git.io link above should point to `https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/master/install-unifi/install-unifi.sh`
+### External MongoDB
+
+You can use an external MongoDB instance instead of the local one bundled with the installation. Set the following environment variables before running the install script:
+
+  ```
+    env MONGO_EXTERNAL=true \
+        MONGO_URI="mongodb://user:pass@mongo-host:27017/unifi" \
+        MONGO_STAT_URI="mongodb://user:pass@mongo-host:27017/unifi_stat" \
+        MONGO_DB_NAME="unifi" \
+        sh install-unifi.sh
+  ```
+
+When using external MongoDB:
+- MongoDB packages are not installed locally
+- MongoDB repair step is skipped
+- The mongod symlink is not created
+- Connection details are written to `/usr/local/UniFi/data/system.properties`
+
+**Note:** The external MongoDB instance must be MongoDB 7.0 or later for compatibility with UniFi 10.x.
 
 
 Starting and Stopping
@@ -94,19 +117,19 @@ To start and stop the controller, use the `service` command from the command lin
 After Installing
 ----------------
 
-After using this script to install the UniFi Controller software, check the [UniFi controller documentation](https://help.ui.com/hc/en-us/articles/360012282453-UniFi-Set-up-a-UniFi-Network-Controller#h_52fdb29d-86cc-4f07-8f09-bd6b7268b525) for next steps. 
+After using this script to install the UniFi Controller software, check the [UniFi controller documentation](https://help.ui.com/hc/en-us/articles/360012282453-UniFi-Set-up-a-UniFi-Network-Controller#h_52fdb29d-86cc-4f07-8f09-bd6b7268b525) for next steps.
 
 
 Troubleshooting
 ---------------
 
-Step one is to determine whether the issue you’ve encountered is with this script or with the UniFi controller software. 
+Step one is to determine whether the issue you've encountered is with this script or with the UniFi controller software.
 
 Issues with the script  might include problems downloading packages, installing packages, interactions with pfSense such as dependency packages being deleted after updates, or incorrect dependencies being downloaded. Feel free to open an issue for anything like this.
 
 Issues with the UniFi Controller software or its various dependencies might include not starting up, not listening on port 8443, exiting with a port conflict, crashing after startup, database errors, memory issues, file permissions, dependency conflicts, or the weather. You should troubleshoot these issues as you would on any other installation of UniFi Controller. For some, the first stop is UniFi technical support; for others, ready answers to most questions about setting up UniFi controller are found most quickly on the UniFi forums.
 
-It may turn out that some issue with the UniFi Controller software is caused by something this script is doing, like if MongoDB won’t start because you’re running it on a PDP-8 with 12-bit words, and this script is installing the build of MongoDB for PDP-11 systems with 16-bit words. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
+It may turn out that some issue with the UniFi Controller software is caused by something this script is doing. In a case like that, if you can connect the behavior of the UniFi Controller with the actions taken by the script, please open an issue, or, better yet, fork and fix and submit a PR.
 
 ### Java compatibility on FreeBSD
 
@@ -115,42 +138,31 @@ This script may create a conflict that breaks Java on a FreeBSD upgrade. To reso
   ```
 pkg unlock -yq javavmwrapper
 pkg unlock -yq java-zoneinfo
-pkg unlock -yq openjdk8
-pkg unlock -yq snappyjava
-pkg unlock -yq snappy
-pkg unlock -yq mongodb36
+pkg unlock -yq openjdk17
 pkg remove -y javavmwrapper
 pkg remove -y java-zoneinfo
   ```
 
-### Compatibility upgrade to MONGODB 4.2 (for those using MongoDB 4.2 or having DB compatibility problems)
+### MongoDB migration warning
 
-The following is a workaround for upgrading MongoDB 3.6 to MonggoDB 4.2 to resolve conflict and crashes in Unifi Controller related to MongoDB versions.
-contributed by user ccottam and johnkeates.
+**If you are upgrading from an older version of this script that used MongoDB 4.2 or earlier**, you cannot jump directly to MongoDB 7.0. MongoDB requires stepping through each major version's feature compatibility level:
 
-1. Install the May 30 version first (https://github.com/unofficial-unifi/unifi-pfsense/blob/e51c3a6f9b55080d1e9b6100a8d42daa30641ba9/install-unifi/install-unifi.sh) to get a working mongo 3.6 database and make sure everything still works.
-(if you are unable to install this, try going directly to step 2)
+**4.2 -> 4.4 -> 5.0 -> 6.0 -> 7.0**
 
-2. Install a mongo 4.0 version: (Jun 1) https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/4167b09685d1bdf881d9076ba01d8ff2ab173a81/install-unifi/install-unifi.sh
-
-3. Set the feature version to 4.0:
-having installed mongodb 4.0, run the following command in shell to set compatibility feature
-
+For each step:
+1. Install the next MongoDB version
+2. Connect to MongoDB and set the feature compatibility version:
   ```
-cmd> mongo localhost:27117
+mongo localhost:27117
+db.adminCommand( { setFeatureCompatibilityVersion: "<version>" } )
   ```
+3. Verify with:
   ```
-cmd> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
-response> { "featureCompatibilityVersion" : { "version" : "3.6" }, "ok" : 1 }
-cmd>  db.adminCommand( { setFeatureCompatibilityVersion: "4.0" } )
-response> { "ok" : 1 }
-cmd> db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
-response> { "featureCompatibilityVersion" : { "version" : "4.0" }, "ok" : 1 }
+db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
   ```
-4. Install the newer Jun 1 version next (upgrades to 4.2) (https://raw.githubusercontent.com/unofficial-unifi/unifi-pfsense/c04a44f34f7c9c7c4e358d43dd7d74b1e676ef6a/install-unifi/install-unifi.sh)
-At this point you have a mongodb that was upgraded from 3.6 to 4.0, the database itself has been upgraded to be 4.0 compatible, finally mongodb 4.2 has been installed. Any database repairs will be handled automatically by the installation script.
+4. Then proceed to the next version
 
-5. Install the latest version of Unifi Controller
+**Alternatively**, you can export your UniFi backup from the old controller, perform a fresh install with this script (which installs MongoDB 7.0), and then restore your backup through the UniFi web interface.
 
 
 Uninstalling
@@ -192,7 +204,7 @@ If you're aware of an update before I am:
 
 1. Create a branch from master, named for the version you are about to test.
 2. Update the URL in install.sh to the latest version.
-3. Test it on your pfSense system.
+3. Test it on your pfSense 2.8.1+ system.
 4. Optional, but ideal: test it on a fresh pfSense system, as in a VM.
 5. If it checks out, submit a pull request from your branch. This helps bring my attention to the update and lets me know that you have tested the new version.
 
